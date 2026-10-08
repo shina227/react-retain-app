@@ -2,7 +2,12 @@
 
 A personal expense and monthly budget manager. React + TypeScript (Vite) frontend, Express + Prisma + PostgreSQL REST API.
 
-> 🚧 In active development. The live URL, features, screenshots and full setup guide will be added here.
+> 🚧 In active development. The live app URL, features, screenshots and full setup guide will be added here.
+
+**Live API:** https://retain-api-dwgm.onrender.com · health check: [`/api/health`](https://retain-api-dwgm.onrender.com/api/health)
+(Free tier: the first request after idle can take 30–60s while the server wakes up.)
+
+See [docs/api.md](docs/api.md) for the API reference.
 
 ## Repository layout
 

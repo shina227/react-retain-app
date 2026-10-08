@@ -1,6 +1,6 @@
 # Retain API
 
-Base URL: `{API_URL}/api` · JSON in, JSON out · Auth: `Authorization: Bearer <jwt>`
+Base URL: `https://retain-api-dwgm.onrender.com/api` (local: `http://localhost:4000/api`) · JSON in, JSON out · Auth: `Authorization: Bearer <jwt>`
 
 ## Conventions
 
