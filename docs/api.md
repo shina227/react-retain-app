@@ -93,20 +93,95 @@ Errors: `401 UNAUTHORIZED` (no `Bearer` header) · `401 INVALID_TOKEN` (bad sign
 ### Expenses
 | | Method | Path | Auth | Description |
 |---|---|---|---|---|
-| | GET | `/expenses` | user | List own expenses: search, filters, sort, pagination |
-| | POST | `/expenses` | user | Create an expense |
-| | GET | `/expenses/:id` | user | Get one own expense |
-| | PUT | `/expenses/:id` | user | Update an own expense |
-| | DELETE | `/expenses/:id` | user | Delete an own expense |
+| ✅ | GET | `/expenses` | user | List own expenses: search, filters, sort, pagination |
+| ✅ | POST | `/expenses` | user | Create an expense |
+| ✅ | GET | `/expenses/:id` | user | Get one own expense |
+| ✅ | PUT | `/expenses/:id` | user | Replace an own expense |
+| ✅ | DELETE | `/expenses/:id` | user | Delete an own expense |
+
+**Expense object**
+
+```json
+{
+  "id": "cm...",
+  "title": "Groceries at Melcom",
+  "amount": 12550,
+  "date": "2026-09-05",
+  "paymentMethod": "CASH",
+  "notes": "weekly shop",
+  "categoryId": "cm...",
+  "category": { "id": "cm...", "name": "Food & Groceries", "color": "#16a34a" },
+  "createdAt": "2026-10-10T09:00:00.000Z",
+  "updatedAt": "2026-10-10T09:00:00.000Z"
+}
+```
+
+**`POST /expenses`** (`201`) and **`PUT /expenses/:id`** (`200`) take the same body. `PUT` replaces the whole record, so leaving out `notes` clears it.
+
+| Field | Rule |
+|---|---|
+| `title` | string, 1–100 chars (trimmed) |
+| `amount` | integer pesewas, > 0, ≤ 1,000,000,000 |
+| `categoryId` | must be an existing category (`400 INVALID_CATEGORY` otherwise) |
+| `date` | `YYYY-MM-DD`, a real calendar date |
+| `paymentMethod` | `CASH` · `CARD` · `MOBILE_MONEY` · `BANK_TRANSFER` |
+| `notes` | optional string, ≤ 500 chars; empty or `null` stores `null` |
+
+The owner always comes from the token. Any `userId` in the body is ignored.
+
+**`GET /expenses/:id`**: `200` expense object. **`DELETE /expenses/:id`**: `204`, no body. Another user's expense returns `404` on get, update and delete.
+
+**`GET /expenses`**: `200` `Paginated<Expense>`. All query params are optional, and empty values are ignored.
+
+| Param | Meaning |
+|---|---|
+| `search` | case-insensitive match on `title` or `notes` |
+| `categoryId`, `paymentMethod` | exact match |
+| `startDate`, `endDate` | `YYYY-MM-DD`, both inclusive; `startDate > endDate` → 400 |
+| `minAmount`, `maxAmount` | pesewas, both inclusive; `min > max` → 400 |
+| `sortBy` | `date` (default) or `amount`; anything else → 400 |
+| `sortOrder` | `desc` (default) or `asc`; ties broken by `createdAt`, then `id` |
+| `page` | ≥ 1, default 1 |
+| `limit` | ≥ 1, default 10, clamped to 50 |
+
+Example: `GET /expenses?search=taxi&paymentMethod=MOBILE_MONEY&startDate=2026-10-01&endDate=2026-10-31&sortBy=amount&sortOrder=asc`
 
 ### Categories
 | | Method | Path | Auth | Description |
 |---|---|---|---|---|
-| | GET | `/categories` | user | All categories (for dropdowns) |
-| | GET | `/admin/categories` | admin | Categories with usage counts |
-| | POST | `/admin/categories` | admin | Create a category |
-| | PUT | `/admin/categories/:id` | admin | Rename or recolor (not the default) |
-| | DELETE | `/admin/categories/:id` | admin | Delete; its expenses move to "Uncategorized" |
+| ✅ | GET | `/categories` | user | All categories (for dropdowns) |
+| ✅ | GET | `/admin/categories` | admin | Categories with usage counts |
+| ✅ | POST | `/admin/categories` | admin | Create a category |
+| ✅ | PUT | `/admin/categories/:id` | admin | Rename or recolor (the default can only be recolored) |
+| ✅ | DELETE | `/admin/categories/:id` | admin | Delete; its expenses move to "Uncategorized" |
+
+**`GET /categories`**: `200`, sorted by name.
+
+```json
+[{ "id": "cm...", "name": "Uncategorized", "color": "#94a3b8", "isDefault": true }]
+```
+
+**`GET /admin/categories`**: `200`. Same fields plus `createdAt` and `usageCount`. Categories with no expenses appear with `0`.
+
+```json
+[{ "id": "cm...", "name": "Transport", "color": "#0ea5e9", "isDefault": false, "createdAt": "...", "usageCount": 31 }]
+```
+
+**`POST /admin/categories`** (`201`) and **`PUT /admin/categories/:id`** (`200`) take the same body and return the category.
+
+```json
+{ "name": "Transport", "color": "#0EA5E9" }
+```
+
+`name` is 1–50 chars (trimmed) and must be unique ignoring case (`409 CATEGORY_EXISTS`). `color` is a 6-digit hex value, stored in lowercase. Renaming the default category returns `400 DEFAULT_CATEGORY`.
+
+**`DELETE /admin/categories/:id`**: `200`. In one transaction, every expense in the category moves to the default "Uncategorized" category, then the category is deleted.
+
+```json
+{ "reassignedCount": 12 }
+```
+
+Errors: `400 DEFAULT_CATEGORY` (the default can't be deleted) · `404` (unknown id). All `/admin/*` routes return `403` for non-admin tokens.
 
 ### Budgets
 | | Method | Path | Auth | Description |
