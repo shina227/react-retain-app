@@ -39,6 +39,7 @@ Every error uses the same shape:
 | 403 | Signed in, but not an admin |
 | 404 | Resource doesn't exist or isn't yours; unknown route |
 | 409 | Unique conflict (e.g. email or category name already exists) |
+| 429 | Too many login/register attempts (10 per 15 min per IP) |
 | 500 | Unexpected server error |
 
 ## Endpoints
@@ -53,9 +54,41 @@ Shapes are filled in as each endpoint is built. ✅ = implemented.
 ### Auth
 | | Method | Path | Auth | Description |
 |---|---|---|---|---|
-| | POST | `/auth/register` | public | Create an account (always role `USER`) |
-| | POST | `/auth/login` | public | Exchange credentials for a JWT |
-| | GET | `/auth/me` | user | Current user |
+| ✅ | POST | `/auth/register` | public | Create an account (always role `USER`) |
+| ✅ | POST | `/auth/login` | public | Exchange credentials for a JWT |
+| ✅ | GET | `/auth/me` | user | Current user |
+
+**`POST /auth/register`**: `201`
+
+```json
+// request: email is trimmed and lowercased; password 8–72 chars; any `role` field is ignored
+{ "name": "Ama Mensah", "email": "ama@example.com", "password": "password123" }
+// response
+{
+  "token": "<jwt>",
+  "user": { "id": "cm...", "name": "Ama Mensah", "email": "ama@example.com", "role": "USER", "createdAt": "2026-10-09T10:00:00.000Z" }
+}
+```
+
+Errors: `400 VALIDATION_ERROR` · `409 EMAIL_TAKEN` · `429 RATE_LIMITED`
+
+**`POST /auth/login`**: `200`, same response shape as register.
+
+```json
+{ "email": "ama@example.com", "password": "password123" }
+```
+
+Errors: `400 VALIDATION_ERROR` · `401 INVALID_CREDENTIALS` (same message, "Invalid email or password", for an unknown email and a wrong password) · `429 RATE_LIMITED`
+
+**`GET /auth/me`**: `200`
+
+```json
+{ "user": { "id": "cm...", "name": "Ama Mensah", "email": "ama@example.com", "role": "USER", "createdAt": "..." } }
+```
+
+Errors: `401 UNAUTHORIZED` (no `Bearer` header) · `401 INVALID_TOKEN` (bad signature, malformed or expired)
+
+**Token:** HS256 JWT with payload `{ sub: userId, role, iat, exp }`, valid for 7 days. Admin routes return `403 FORBIDDEN` for a valid non-admin token.
 
 ### Expenses
 | | Method | Path | Auth | Description |
