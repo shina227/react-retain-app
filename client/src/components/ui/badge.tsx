@@ -2,18 +2,25 @@ import * as React from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from 'cn';
 
-// Untitled UI pill badges. Each colour also sets --dot for the optional status dot.
+// Untitled UI pill badges, on utility colours so they adapt to dark mode.
+// Each colour also sets --dot for the optional status dot.
 const badgeVariants = cva(
   'inline-flex w-fit shrink-0 items-center gap-1.5 rounded-full font-medium whitespace-nowrap ring-1 ring-inset [&>svg]:pointer-events-none [&>svg]:size-3',
   {
     variants: {
       variant: {
-        default: 'bg-gray-50 text-gray-700 ring-gray-200 [--dot:var(--color-gray-500)]',
-        brand: 'bg-brand-50 text-brand-700 ring-brand-200 [--dot:var(--color-brand-500)]',
-        success: 'bg-success-50 text-success-700 ring-success-200 [--dot:var(--color-success-500)]',
-        warning: 'bg-warning-50 text-warning-700 ring-warning-200 [--dot:var(--color-warning-500)]',
-        destructive: 'bg-error-50 text-error-700 ring-error-200 [--dot:var(--color-error-500)]',
-        outline: 'bg-white text-gray-700 ring-gray-300 [--dot:var(--color-gray-500)]',
+        default:
+          'bg-utility-gray-50 text-utility-gray-700 ring-utility-gray-200 [--dot:var(--color-utility-gray-500)]',
+        brand:
+          'bg-utility-brand-50 text-utility-brand-700 ring-utility-brand-200 [--dot:var(--color-utility-brand-500)]',
+        success:
+          'bg-utility-success-50 text-utility-success-700 ring-utility-success-200 [--dot:var(--color-utility-success-500)]',
+        warning:
+          'bg-utility-warning-50 text-utility-warning-700 ring-utility-warning-200 [--dot:var(--color-utility-warning-500)]',
+        destructive:
+          'bg-utility-error-50 text-utility-error-700 ring-utility-error-200 [--dot:var(--color-utility-error-500)]',
+        outline:
+          'bg-primary text-secondary ring-(--border-color-primary) [--dot:var(--color-utility-gray-500)]',
       },
       size: {
         sm: 'px-2 py-0.5 text-xs',

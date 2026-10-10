@@ -1,7 +1,6 @@
 import { CircleCheck, CircleMinus, CircleX, TriangleAlert, type LucideIcon } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-
-type BudgetStatus = 'within' | 'approaching' | 'over' | 'none';
+import type { BudgetStatus } from '@/types/api';
 
 // Status is never colour alone: each one also has its own icon and label.
 const statuses: Record<

@@ -1,13 +1,14 @@
 import * as React from 'react';
 import { cn } from 'cn';
 
+// Untitled input: 44px, 16px text, border-primary, brand ring on focus, error ring when invalid.
 function Input({ className, type, ...props }: React.ComponentProps<'input'>) {
   return (
     <input
       type={type}
       data-slot="input"
       className={cn(
-        'h-11 w-full min-w-0 rounded-lg border border-input bg-white px-3.5 text-base text-gray-900 shadow-xs transition outline-none placeholder:text-gray-500 focus-visible:border-brand-300 focus-visible:ring-4 focus-visible:ring-brand-100 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 aria-invalid:border-error-300 aria-invalid:focus-visible:ring-error-100 file:mr-3 file:border-0 file:bg-transparent file:text-sm file:font-semibold file:text-gray-700',
+        'h-11 w-full min-w-0 rounded-lg border border-primary bg-primary px-3.5 text-base text-primary shadow-xs transition outline-none placeholder:text-placeholder focus-visible:border-brand focus-visible:ring-4 focus-visible:ring-brand-500/24 disabled:cursor-not-allowed disabled:bg-secondary disabled:text-disabled aria-invalid:border-error_subtle aria-invalid:focus-visible:ring-error-500/24 file:mr-3 file:border-0 file:bg-transparent file:text-sm file:font-semibold file:text-secondary',
         className,
       )}
       {...props}

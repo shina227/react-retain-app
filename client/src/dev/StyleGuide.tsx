@@ -33,7 +33,6 @@ import {
 } from '@/components/ui/select';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Toaster } from '@/components/ui/sonner';
 import {
   Table,
   TableBody,
@@ -48,7 +47,7 @@ import {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="flex flex-col gap-4">
-      <h2 className="text-sm font-semibold text-gray-900">{title}</h2>
+      <h2 className="text-sm font-semibold text-primary">{title}</h2>
       {children}
     </section>
   );
@@ -75,8 +74,8 @@ export default function StyleGuide() {
   return (
     <main className="mx-auto flex max-w-5xl flex-col gap-10 px-4 py-10 md:px-8">
       <header className="flex flex-col gap-1">
-        <h1 className="text-display-sm font-semibold text-gray-900">Retain style guide</h1>
-        <p className="text-base text-gray-600">Untitled UI styling with an indigo brand.</p>
+        <h1 className="text-display-sm font-semibold text-primary">Retain style guide</h1>
+        <p className="text-base text-tertiary">Untitled UI styling with an indigo brand.</p>
       </header>
 
       <Section title="Buttons">
@@ -201,7 +200,7 @@ export default function StyleGuide() {
             <TableBody>
               {rows.map((row) => (
                 <TableRow key={row.title}>
-                  <TableCell className="font-medium text-gray-900">{row.title}</TableCell>
+                  <TableCell className="font-medium text-primary">{row.title}</TableCell>
                   <TableCell>
                     <Badge variant="brand">{row.category}</Badge>
                   </TableCell>
@@ -277,8 +276,6 @@ export default function StyleGuide() {
           </Button>
         </div>
       </Section>
-
-      <Toaster />
     </main>
   );
 }

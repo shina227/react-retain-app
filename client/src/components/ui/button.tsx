@@ -4,20 +4,23 @@ import { cn } from 'cn';
 import { Slot } from 'radix-ui';
 
 const secondary =
-  'bg-white text-gray-700 shadow-skeuomorphic hover:bg-gray-50 hover:text-gray-800 aria-expanded:bg-gray-50';
+  'bg-primary text-secondary shadow-skeuomorphic inset-ring inset-ring-(--border-color-primary) hover:bg-primary_hover hover:text-secondary_hover aria-expanded:bg-primary_hover';
 
-// Untitled UI buttons: primary, secondary (white, outlined), tertiary (ghost), destructive, link.
+// Untitled UI buttons: primary, secondary, tertiary (ghost), destructive, link.
 const buttonVariants = cva(
-  "group/button inline-flex shrink-0 items-center justify-center gap-1.5 rounded-lg text-sm font-semibold whitespace-nowrap transition outline-none select-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-5",
+  "group/button inline-flex shrink-0 items-center justify-center gap-1.5 rounded-lg text-sm font-semibold whitespace-nowrap transition outline-none select-none focus-visible:outline-2 focus-visible:outline-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-5",
   {
     variants: {
       variant: {
-        default: 'bg-primary text-primary-foreground shadow-skeuomorphic hover:bg-brand-700',
+        default:
+          'bg-brand-solid text-white shadow-skeuomorphic inset-ring-2 inset-ring-white/12 hover:bg-brand-solid_hover',
         secondary,
         outline: secondary,
-        ghost: 'text-gray-600 hover:bg-gray-50 hover:text-gray-700 aria-expanded:bg-gray-50',
-        destructive: 'bg-error-600 text-white shadow-skeuomorphic hover:bg-error-700',
-        link: 'h-auto! p-0! text-brand-700 underline-offset-4 hover:text-brand-800 hover:underline',
+        ghost:
+          'text-tertiary hover:bg-primary_hover hover:text-tertiary_hover aria-expanded:bg-primary_hover',
+        destructive:
+          'bg-error-solid text-white shadow-skeuomorphic inset-ring-2 inset-ring-white/12 hover:bg-error-solid_hover',
+        link: 'h-auto! p-0! text-brand-secondary underline-offset-4 hover:text-brand-secondary_hover hover:underline',
       },
       size: {
         xs: "h-8 px-2.5 text-xs [&_svg:not([class*='size-'])]:size-4",
