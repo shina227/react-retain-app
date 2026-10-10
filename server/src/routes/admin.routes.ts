@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import * as adminController from '../controllers/adminController.js';
 import * as categoryController from '../controllers/categoryController.js';
 import { requireAdmin, requireAuth } from '../middleware/auth.js';
 import { validate } from '../middleware/validate.js';
@@ -8,6 +9,8 @@ import { categoryBodySchema } from '../validators/category.js';
 export const adminRouter = Router();
 
 adminRouter.use(requireAuth, requireAdmin);
+
+adminRouter.get('/insights', adminController.insights);
 
 adminRouter.get('/categories', categoryController.listWithUsage);
 adminRouter.post('/categories', validate({ body: categoryBodySchema }), categoryController.create);

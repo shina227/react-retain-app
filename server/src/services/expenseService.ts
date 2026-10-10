@@ -4,19 +4,23 @@ import { prisma } from '../lib/prisma.js';
 import type { Paginated } from '../types/api.js';
 import type { ExpenseInput, ExpenseListQuery } from '../validators/expense.js';
 
-const include = { category: { select: { id: true, name: true, color: true } } } as const;
+export const include = { category: { select: { id: true, name: true, color: true } } } as const;
 
 type ExpenseWithCategory = Prisma.ExpenseGetPayload<{ include: typeof include }>;
 
 const toDate = (value?: string) => (value ? new Date(value) : undefined);
 
 // Sends `date` back as `YYYY-MM-DD` and drops the owner id.
-const toExpenseDto = ({ date, userId: _userId, ...rest }: ExpenseWithCategory) => ({
+export const toExpenseDto = <T extends ExpenseWithCategory>({
+  date,
+  userId: _userId,
+  ...rest
+}: T) => ({
   ...rest,
   date: date.toISOString().slice(0, 10),
 });
 
-export type ExpenseDto = ReturnType<typeof toExpenseDto>;
+export type ExpenseDto = ReturnType<typeof toExpenseDto<ExpenseWithCategory>>;
 
 async function toData({ categoryId, date, notes, ...rest }: ExpenseInput) {
   const category = await prisma.category.findUnique({ where: { id: categoryId } });

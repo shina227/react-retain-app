@@ -186,11 +186,77 @@ Errors: `400 DEFAULT_CATEGORY` (the default can't be deleted) · `404` (unknown 
 ### Budgets
 | | Method | Path | Auth | Description |
 |---|---|---|---|---|
-| | GET | `/budgets/:month` | user | Own budget for a month |
-| | PUT | `/budgets/:month` | user | Set or update own budget for a month |
+| ✅ | GET | `/budgets/:month` | user | Own budget for a month |
+| ✅ | PUT | `/budgets/:month` | user | Set or update own budget for a month |
+
+`:month` is `YYYY-MM` with a real month (`01`–`12`), otherwise `400`.
+
+**`GET /budgets/:month`**: `200`. `amount` is `null` when no budget is set (not a 404).
+
+```json
+{ "month": "2026-10", "amount": 250000 }
+```
+
+**`PUT /budgets/:month`**: `200`, same shape. Creates the month's budget or replaces its amount (one budget per user per month).
+
+```json
+{ "amount": 250000 }
+```
+
+`amount` is integer pesewas, > 0, ≤ 1,000,000,000.
 
 ### Dashboard and insights
 | | Method | Path | Auth | Description |
 |---|---|---|---|---|
-| | GET | `/dashboard?month=YYYY-MM` | user | Monthly summary: spent, budget, status, highest, by category, recent |
-| | GET | `/admin/insights` | admin | Platform-wide insights |
+| ✅ | GET | `/dashboard?month=YYYY-MM` | user | Monthly summary: spent, budget, status, highest, by category, recent |
+| ✅ | GET | `/admin/insights` | admin | Platform-wide insights |
+
+**`GET /dashboard?month=YYYY-MM`**: `200`. `month` defaults to the current month (UTC). The month runs from the 1st (inclusive) to the 1st of the next month (exclusive).
+
+```json
+{
+  "month": "2026-10",
+  "totalSpent": 212000,
+  "budget": 250000,
+  "remaining": 38000,
+  "percentUsed": 84.8,
+  "status": "approaching",
+  "highestExpense": { "...": "expense object" },
+  "byCategory": [
+    { "category": { "id": "cm...", "name": "Rent", "color": "#6366f1" }, "total": 120000, "count": 1 }
+  ],
+  "recent": [{ "...": "expense object" }]
+}
+```
+
+| Field | Notes |
+|---|---|
+| `budget`, `remaining`, `percentUsed` | `null` when no budget is set. `remaining` goes negative when over budget. `percentUsed` has one decimal. |
+| `status` | `within` (< 80%) · `approaching` (80–100%) · `over` (> 100%) · `none` (no budget) |
+| `highestExpense` | the month's largest expense, or `null` |
+| `byCategory` | only categories with spend this month, largest total first |
+| `recent` | up to 5 of the month's expenses, newest date first |
+
+**`GET /admin/insights`**: `200`. "Users" means role `USER` (admins are not counted).
+
+```json
+{
+  "totalUsers": 5,
+  "totalExpenses": 150,
+  "totalValue": 4825000,
+  "expensesThisMonth": 38,
+  "spendPerCategory": [{ "id": "cm...", "name": "Rent", "color": "#6366f1", "count": 15, "total": 1800000 }],
+  "top5": [{ "id": "cm...", "name": "Food", "color": "#16a34a", "count": 41, "total": 610000 }],
+  "bottom5": [{ "id": "cm...", "name": "Gifts", "color": "#db2777", "count": 0, "total": 0 }],
+  "recentExpenses": [{ "...": "expense object", "user": { "id": "cm...", "name": "Ama Mensah" } }],
+  "recentUsers": [{ "id": "cm...", "name": "Ama Mensah", "email": "demo@example.com", "createdAt": "..." }]
+}
+```
+
+| Field | Notes |
+|---|---|
+| `expensesThisMonth` | number of expenses dated in the current month |
+| `spendPerCategory` | every category (including unused ones), largest total first |
+| `top5` / `bottom5` | most / least used by expense count; `bottom5` includes zero-use categories, least used first; ties sorted by name |
+| `recentExpenses` | 10 most recently added, across all users |
+| `recentUsers` | 5 newest users; no password hashes |

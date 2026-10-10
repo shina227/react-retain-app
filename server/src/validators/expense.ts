@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { PaymentMethod } from '../generated/prisma/client.js';
+import { money } from './common.js';
 
-const MAX_AMOUNT = 1_000_000_000; // GHS 10M in pesewas; keeps us well inside Postgres Int
 const MAX_LIMIT = 50;
 
 // Treats empty query params (`?search=`) as not set.
@@ -9,15 +9,11 @@ const optional = <T extends z.ZodType>(schema: T) =>
   z.preprocess((value) => (value === '' ? undefined : value), schema.optional());
 
 const date = z.iso.date('Date must be YYYY-MM-DD');
-const amount = z
-  .number()
-  .int('Amount must be in pesewas')
-  .positive('Amount must be greater than 0');
 
 // Used for create and for PUT (full replacement).
 export const expenseBodySchema = z.object({
   title: z.string().trim().min(1, 'Title is required').max(100, 'Title is too long'),
-  amount: amount.max(MAX_AMOUNT, 'Amount is too large'),
+  amount: money,
   categoryId: z.string().min(1, 'Category is required'),
   date,
   paymentMethod: z.enum(PaymentMethod, 'Choose a valid payment method'),
