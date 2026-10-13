@@ -1,17 +1,18 @@
 import { AlertCircle, CreditCardDown, Plus } from '@untitledui/icons';
-import { useState } from 'react';
+import { useEffect } from 'react';
 import { Link, Outlet } from 'react-router';
 import { EmptyState } from '@/components/feedback/EmptyState';
 import { PageHeader } from '@/components/PageHeader';
 import { Pagination } from '@/components/Pagination';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { canGoBack } from '@/features/expenses/overlayNavigation';
-import { PAGE_SIZE } from '@/features/expenses/constants';
 import { ExpenseList } from '@/features/expenses/ExpenseList';
 import { ExpenseListSkeleton } from '@/features/expenses/ExpenseListSkeleton';
 import { useGetExpensesQuery } from '@/features/expenses/expensesApi';
+import { canGoBack } from '@/features/expenses/overlayNavigation';
 import { cn } from '@/lib/utils';
+import { selectExpenseQueryArgs, setLimit, setPage } from '@/store/expenseFiltersSlice';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
 
 const addExpenseButton = (
   <Button asChild>
@@ -23,17 +24,16 @@ const addExpenseButton = (
 );
 
 export default function ExpensesPage() {
-  // Moves into the Redux filters slice with the rest of the query on Tuesday.
-  const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(PAGE_SIZE);
-  const { data, error, isLoading, isFetching, refetch } = useGetExpensesQuery({
-    page,
-    limit: pageSize,
-  });
+  const dispatch = useAppDispatch();
+  const query = useAppSelector(selectExpenseQueryArgs);
+  const { data, error, isLoading, isFetching, refetch } = useGetExpensesQuery(query);
 
-  // Deleting the last expense on the last page leaves us past the end: step back to the
-  // new last page (adjusting state during render, React's pattern for derived resets).
-  if (data && data.totalPages > 0 && page > data.totalPages) setPage(data.totalPages);
+  // Deleting the last expense on the last page leaves us past the end: step back to the new
+  // last page. An effect, since dispatching to the store during render isn't allowed.
+  const lastPage = data?.totalPages ?? 0;
+  useEffect(() => {
+    if (lastPage > 0 && query.page > lastPage) dispatch(setPage(lastPage));
+  }, [dispatch, lastPage, query.page]);
 
   return (
     <>
@@ -81,18 +81,15 @@ export default function ExpensesPage() {
             aria-busy={isFetching}
             className={cn('transition-opacity', isFetching && 'opacity-60')}
           >
-            <ExpenseList expenses={data.data} grouped />
+            {/* Day groups only make sense when the list is in date order. */}
+            <ExpenseList expenses={data.data} grouped={query.sortBy === 'date'} />
             <Pagination
               page={data.page}
               totalPages={data.totalPages}
               total={data.total}
-              pageSize={pageSize}
-              onPageChange={setPage}
-              // A new page size changes what "page 3" means, so start again from the top.
-              onPageSizeChange={(size) => {
-                setPageSize(size);
-                setPage(1);
-              }}
+              pageSize={data.limit}
+              onPageChange={(page) => dispatch(setPage(page))}
+              onPageSizeChange={(limit) => dispatch(setLimit(limit))}
             />
           </div>
         )}
