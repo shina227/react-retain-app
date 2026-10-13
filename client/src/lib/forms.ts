@@ -15,3 +15,13 @@ export function applyServerErrors<T extends FieldValues>(
   }
   return fields.length > 0 ? null : error.message;
 }
+
+// For date inputs whose browser icon is replaced by ours: clicking anywhere opens the picker.
+// showPicker() throws in some embeds (cross-origin iframes); typing the date still works there.
+export function openDatePicker(input: HTMLInputElement) {
+  try {
+    input.showPicker();
+  } catch {
+    // No picker available here.
+  }
+}

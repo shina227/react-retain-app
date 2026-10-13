@@ -1,4 +1,4 @@
-import { AlertCircle, CreditCardDown, Plus } from '@untitledui/icons';
+import { AlertCircle, CreditCardDown, Plus, SearchLg } from '@untitledui/icons';
 import { useEffect } from 'react';
 import { Link, Outlet } from 'react-router';
 import { EmptyState } from '@/components/feedback/EmptyState';
@@ -7,11 +7,19 @@ import { Pagination } from '@/components/Pagination';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ExpenseList } from '@/features/expenses/ExpenseList';
+import { ExpenseFilterBar } from '@/features/expenses/filters/ExpenseFilterBar';
 import { ExpenseListSkeleton } from '@/features/expenses/ExpenseListSkeleton';
+import { ExpenseStats } from '@/features/expenses/ExpenseStats';
 import { useGetExpensesQuery } from '@/features/expenses/expensesApi';
 import { canGoBack } from '@/features/expenses/overlayNavigation';
 import { cn } from '@/lib/utils';
-import { selectExpenseQueryArgs, setLimit, setPage } from '@/store/expenseFiltersSlice';
+import {
+  clearFilters,
+  selectActiveFilterCount,
+  selectExpenseQueryArgs,
+  setLimit,
+  setPage,
+} from '@/store/expenseFiltersSlice';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 
 const addExpenseButton = (
@@ -26,6 +34,7 @@ const addExpenseButton = (
 export default function ExpensesPage() {
   const dispatch = useAppDispatch();
   const query = useAppSelector(selectExpenseQueryArgs);
+  const activeFilterCount = useAppSelector(selectActiveFilterCount);
   const { data, error, isLoading, isFetching, refetch } = useGetExpensesQuery(query);
 
   // Deleting the last expense on the last page leaves us past the end: step back to the new
@@ -43,6 +52,8 @@ export default function ExpensesPage() {
         actions={addExpenseButton}
       />
 
+      {!error && <ExpenseStats list={data} isFetching={isFetching} />}
+
       <section
         aria-labelledby="all-expenses"
         className="overflow-hidden rounded-xl border border-secondary bg-primary shadow-xs"
@@ -58,6 +69,8 @@ export default function ExpensesPage() {
           )}
         </header>
 
+        <ExpenseFilterBar resultCount={data?.total} />
+
         {isLoading ? (
           <ExpenseListSkeleton />
         ) : error ? (
@@ -67,6 +80,17 @@ export default function ExpensesPage() {
             title="Couldn't load your expenses"
             description={'message' in error ? error.message : 'Something went wrong. Try again.'}
             actions={<Button onClick={refetch}>Try again</Button>}
+          />
+        ) : !data?.total && activeFilterCount > 0 ? (
+          <EmptyState
+            icon={SearchLg}
+            title="No expenses found"
+            description="Nothing matches these filters. Try widening them, or start again."
+            actions={
+              <Button variant="secondary" onClick={() => dispatch(clearFilters())}>
+                Clear filters
+              </Button>
+            }
           />
         ) : !data?.total ? (
           <EmptyState

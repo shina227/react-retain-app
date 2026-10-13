@@ -86,6 +86,11 @@ export interface Paginated<T> {
   totalPages: number;
 }
 
+// GET /expenses: a page plus the sum of every matching expense (not just this page).
+export interface ExpenseList extends Paginated<Expense> {
+  summary: { totalAmount: number };
+}
+
 export interface Budget {
   month: string;
   amount: number | null;

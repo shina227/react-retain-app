@@ -28,10 +28,10 @@ async function toData({ categoryId, date, notes, ...rest }: ExpenseInput) {
   return { ...rest, categoryId, date: new Date(date), notes: notes || null };
 }
 
-export async function listExpenses(
-  userId: string,
-  q: ExpenseListQuery,
-): Promise<Paginated<ExpenseDto>> {
+// A page of expenses plus totals over every match (not just this page), for the stat cards.
+export type ExpenseList = Paginated<ExpenseDto> & { summary: { totalAmount: number } };
+
+export async function listExpenses(userId: string, q: ExpenseListQuery): Promise<ExpenseList> {
   const where: Prisma.ExpenseWhereInput = {
     userId,
     categoryId: q.categoryId,
@@ -46,7 +46,7 @@ export async function listExpenses(
     }),
   };
 
-  const [rows, total] = await prisma.$transaction([
+  const [rows, totals] = await prisma.$transaction([
     prisma.expense.findMany({
       where,
       include,
@@ -55,8 +55,10 @@ export async function listExpenses(
       skip: (q.page - 1) * q.limit,
       take: q.limit,
     }),
-    prisma.expense.count({ where }),
+    // One query for both the count and the sum of every matching expense.
+    prisma.expense.aggregate({ where, _count: true, _sum: { amount: true } }),
   ]);
+  const total = totals._count;
 
   return {
     data: rows.map(toExpenseDto),
@@ -64,6 +66,8 @@ export async function listExpenses(
     limit: q.limit,
     total,
     totalPages: Math.ceil(total / q.limit),
+    // SUM over no rows is null.
+    summary: { totalAmount: totals._sum.amount ?? 0 },
   };
 }
 

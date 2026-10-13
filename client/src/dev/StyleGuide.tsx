@@ -1,5 +1,16 @@
-import { ChevronDown, LogOut01, Plus, Settings01, Trash01, User01 } from '@untitledui/icons';
+import {
+  BarChartSquare02,
+  ChevronDown,
+  CreditCardDown,
+  LogOut01,
+  Plus,
+  Receipt,
+  Settings01,
+  Trash01,
+  User01,
+} from '@untitledui/icons';
 import { toast } from 'sonner';
+import { StatCard } from '@/components/StatCard';
 import { BudgetStatusBadge } from '@/features/budgets/BudgetStatusBadge';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -159,19 +170,24 @@ export default function StyleGuide() {
       </Section>
 
       <Section title="Cards and progress">
-        <div className="grid gap-6 md:grid-cols-3">
-          <Card>
-            <CardHeader>
-              <CardDescription>Total spent</CardDescription>
-              <CardTitle className="text-display-sm">RF 212,000</CardTitle>
-            </CardHeader>
-          </Card>
-          <Card>
-            <CardHeader>
-              <CardDescription>Remaining</CardDescription>
-              <CardTitle className="text-display-sm">RF 38,000</CardTitle>
-            </CardHeader>
-          </Card>
+        <div className="grid gap-4 md:grid-cols-3">
+          <StatCard
+            icon={CreditCardDown}
+            color="var(--color-brand-600)"
+            label="Total spent"
+            value="RF 1,361,290"
+            caption="All time"
+          />
+          <StatCard
+            icon={Receipt}
+            color="#0ba5ec"
+            label="Expenses"
+            value="45"
+            caption="Transactions recorded"
+          />
+          <StatCard icon={BarChartSquare02} color="#7a5af8" label="Average per expense" />
+        </div>
+        <div className="mt-4 grid gap-4 md:grid-cols-3">
           <Card>
             <CardHeader>
               <CardTitle>October budget</CardTitle>

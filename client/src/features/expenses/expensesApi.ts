@@ -1,5 +1,5 @@
 import { api } from '@/lib/api';
-import type { Category, Expense, ExpenseInput, ExpenseQuery, Paginated } from '@/types/api';
+import type { Category, Expense, ExpenseInput, ExpenseList, ExpenseQuery } from '@/types/api';
 
 // Any change to an expense also changes the dashboard totals and the admin insights.
 const LIST = { type: 'Expense', id: 'LIST' } as const;
@@ -8,7 +8,7 @@ const derived = ['Dashboard', 'Admin'] as const;
 export const expensesApi = api.injectEndpoints({
   endpoints: (build) => ({
     // The query object becomes the URL params; undefined values are left out.
-    getExpenses: build.query<Paginated<Expense>, ExpenseQuery>({
+    getExpenses: build.query<ExpenseList, ExpenseQuery>({
       query: (params) => ({ url: '/expenses', params }),
       providesTags: (result) => [
         LIST,

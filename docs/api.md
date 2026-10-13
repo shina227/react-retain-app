@@ -131,7 +131,11 @@ The owner always comes from the token. Any `userId` in the body is ignored.
 
 **`GET /expenses/:id`**: `200` expense object. **`DELETE /expenses/:id`**: `204`, no body. Another user's expense returns `404` on get, update and delete.
 
-**`GET /expenses`**: `200` `Paginated<Expense>`. All query params are optional, and empty values are ignored.
+**`GET /expenses`**: `200` `Paginated<Expense>` plus a `summary` of **every** expense matching the filters (not just this page): `total` is how many match, `summary.totalAmount` their sum in minor units (`0` when nothing matches). All query params are optional, and empty values are ignored.
+
+```json
+{ "data": [/* expenses */], "page": 1, "limit": 10, "total": 45, "totalPages": 5, "summary": { "totalAmount": 1361290 } }
+```
 
 | Param | Meaning |
 |---|---|

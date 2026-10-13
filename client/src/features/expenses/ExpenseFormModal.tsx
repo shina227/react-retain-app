@@ -26,7 +26,7 @@ import {
 import { Skeleton } from '@/components/ui/skeleton';
 import { Textarea } from '@/components/ui/textarea';
 import { formatMoney, fromMinor, todayISO } from '@/lib/format';
-import { applyServerErrors } from '@/lib/forms';
+import { applyServerErrors, openDatePicker } from '@/lib/forms';
 import type { Expense, ExpenseInput, PaymentMethod } from '@/types/api';
 import type { IconComponent } from '@/types/icon';
 import { paymentMethodIcons, paymentMethodLabels } from './constants';
@@ -44,15 +44,6 @@ import { expenseFormSchema, type ExpenseFormValues } from './schemas';
 const NOTES_MAX = 500;
 
 const paymentMethods = Object.keys(paymentMethodLabels) as PaymentMethod[];
-
-// showPicker() throws in some embeds (cross-origin iframes); the input still works by typing.
-const openDatePicker = (input: HTMLInputElement) => {
-  try {
-    input.showPicker();
-  } catch {
-    // Ignore: no picker available here.
-  }
-};
 
 // /expenses/new: a modal over the list.
 export function NewExpensePanel() {
