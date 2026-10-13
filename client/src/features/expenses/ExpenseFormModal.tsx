@@ -3,9 +3,9 @@ import { useId, useState, type ReactNode } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { useParams } from 'react-router';
 import { toast } from 'sonner';
-import { FormAlert } from '@/components/FormAlert';
-import { SubmitButton } from '@/components/SubmitButton';
-import { TextField } from '@/components/TextField';
+import { FormAlert } from '@/components/form/FormAlert';
+import { SubmitButton } from '@/components/form/SubmitButton';
+import { TextField } from '@/components/form/TextField';
 import { Button } from '@/components/ui/button';
 import { Field, FieldDescription, FieldError, FieldLabel } from '@/components/ui/field';
 import {

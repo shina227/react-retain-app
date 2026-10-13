@@ -1,7 +1,7 @@
 import { CircleAlert, Plus, Receipt } from 'lucide-react';
 import { useState } from 'react';
 import { Link, Outlet } from 'react-router';
-import { EmptyState } from '@/components/EmptyState';
+import { EmptyState } from '@/components/feedback/EmptyState';
 import { PageHeader } from '@/components/PageHeader';
 import { Pagination } from '@/components/Pagination';
 import { Badge } from '@/components/ui/badge';

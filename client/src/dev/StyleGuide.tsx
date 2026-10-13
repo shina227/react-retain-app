@@ -1,6 +1,6 @@
 import { ChevronDown, LogOut, Plus, Settings, Trash2, User } from 'lucide-react';
 import { toast } from 'sonner';
-import { BudgetStatusBadge } from '@/components/BudgetStatusBadge';
+import { BudgetStatusBadge } from '@/features/budgets/BudgetStatusBadge';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';

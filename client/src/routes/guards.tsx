@@ -1,5 +1,5 @@
 import { Navigate, Outlet, useLocation, type Location } from 'react-router';
-import { FullPageLoader } from '@/components/FullPageLoader';
+import { FullPageLoader } from '@/components/feedback/FullPageLoader';
 import { useAuth } from '@/features/auth/AuthContext';
 
 // Signed-in users only. Remembers where the user was heading so login can send them back.

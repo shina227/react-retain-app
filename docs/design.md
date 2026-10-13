@@ -68,13 +68,13 @@ Inter (variable). `text-xs` 12/18, `text-sm` 14/20, `text-base` 16/24, `text-lg`
 | Card | `bg-primary`, `border-secondary`, 12px radius, 20px padding (24px from `md`) |
 | Table | `bg-secondary` header, 12px medium labels, 24px cell padding |
 | Progress | 8px `bg-quaternary` track, value clamped to 0–100, `indicatorClassName` for status colour |
-| Logomark | Untitled-style white tile with a faint grid and an indigo wallet icon (`components/Logo.tsx`) |
+| Logomark | Untitled-style indigo (`brand-600`) tile with a faint grid and a white wallet icon (`components/Logo.tsx`) |
 
 ## Pages built from Figma frames
 
 | Page | Frame |
 |---|---|
-| Log in / Sign up | "Sign up – Simple" desktop (1440) and mobile (375): 360px column, 96px (desktop) / 48px (mobile) from the top, no card, Sign up / Log in tabs (no separate "Already have an account?" link), password eye toggle, live requirement checklist |
+| Log in / Sign up | "Sign up – Split" on desktop (≥ lg): logo top-left, 360px form column centred in the left half, and an indigo brand panel on the right (`AuthShowcase`: tagline plus a decorative dashboard mock, `aria-hidden`). Below lg it's "Sign up – Simple": logo centred above a 360px column, 96px (tablet) / 48px (mobile) from the top, no card. Shared: Sign up / Log in tabs (no separate "Already have an account?" link), password eye toggle, live requirement checklist |
 | App shell | "Dashboard" desktop (1440) and mobile (375), sidebar navigation and page header (details below) |
 
 ## App shell

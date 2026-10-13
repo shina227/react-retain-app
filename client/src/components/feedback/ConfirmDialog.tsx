@@ -1,7 +1,7 @@
 import { XIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { AlertDialog } from 'radix-ui';
-import { SubmitButton } from '@/components/SubmitButton';
+import { SubmitButton } from '@/components/form/SubmitButton';
 import { Button } from '@/components/ui/button';
 
 // The Untitled destructive modal: title, consequence, Cancel | Delete.

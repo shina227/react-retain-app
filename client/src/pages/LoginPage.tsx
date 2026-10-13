@@ -1,10 +1,10 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { FormAlert } from '@/components/FormAlert';
-import { PasswordField } from '@/components/PasswordField';
-import { SubmitButton } from '@/components/SubmitButton';
-import { TextField } from '@/components/TextField';
+import { FormAlert } from '@/components/form/FormAlert';
+import { PasswordField } from '@/components/form/PasswordField';
+import { SubmitButton } from '@/components/form/SubmitButton';
+import { TextField } from '@/components/form/TextField';
 import { useAuth } from '@/features/auth/AuthContext';
 import { AuthHeader } from '@/features/auth/AuthHeader';
 import { loginSchema } from '@/features/auth/schemas';

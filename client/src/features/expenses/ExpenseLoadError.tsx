@@ -1,5 +1,5 @@
 import { CircleAlert, SearchX } from 'lucide-react';
-import { EmptyState } from '@/components/EmptyState';
+import { EmptyState } from '@/components/feedback/EmptyState';
 import { Button } from '@/components/ui/button';
 import { isApiError } from '@/lib/api';
 import { ExpensePanel } from './ExpensePanel';

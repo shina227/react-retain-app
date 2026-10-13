@@ -1,5 +1,4 @@
 import { NavLink, useLocation } from 'react-router';
-import { Logomark } from '@/components/Logo';
 import { cn } from '@/lib/utils';
 
 const tabs = [
@@ -7,14 +6,13 @@ const tabs = [
   { to: '/login', label: 'Log in' },
 ];
 
-// Logomark, title, description and the Sign up | Log in switcher.
+// Title, description and the Sign up | Log in switcher (AuthLayout shows the logo).
 // Links pass the router state on, so "where the user was going" survives switching.
 export function AuthHeader({ title, description }: { title: string; description: string }) {
   const { state } = useLocation();
 
   return (
-    <header className="flex flex-col items-center gap-6 text-center">
-      <Logomark />
+    <header className="flex flex-col items-center gap-6 text-center lg:items-start lg:text-left">
       <div className="flex flex-col gap-2 md:gap-3">
         <h1 className="text-xl font-semibold text-primary md:text-display-xs">{title}</h1>
         <p className="text-base text-tertiary">{description}</p>

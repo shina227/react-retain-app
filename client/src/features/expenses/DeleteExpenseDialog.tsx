@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { ConfirmDialog } from '@/components/ConfirmDialog';
+import { ConfirmDialog } from '@/components/feedback/ConfirmDialog';
 import { isApiError } from '@/lib/api';
 import type { Expense } from '@/types/api';
 import { useDeleteExpenseMutation } from './expensesApi';
