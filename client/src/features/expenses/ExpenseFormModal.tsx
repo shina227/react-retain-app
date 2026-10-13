@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Calendar, CreditCardEdit, CreditCardPlus } from '@untitledui/icons';
 import { useId, useState, type ReactNode } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { useParams } from 'react-router';
@@ -7,7 +8,14 @@ import { FormAlert } from '@/components/form/FormAlert';
 import { SubmitButton } from '@/components/form/SubmitButton';
 import { TextField } from '@/components/form/TextField';
 import { Button } from '@/components/ui/button';
-import { Field, FieldDescription, FieldError, FieldLabel } from '@/components/ui/field';
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldLabel,
+  FieldLegend,
+  FieldSet,
+} from '@/components/ui/field';
 import {
   Select,
   SelectContent,
@@ -17,10 +25,11 @@ import {
 } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Textarea } from '@/components/ui/textarea';
-import { fromMinor, todayISO } from '@/lib/format';
+import { formatMoney, fromMinor, todayISO } from '@/lib/format';
 import { applyServerErrors } from '@/lib/forms';
 import type { Expense, ExpenseInput, PaymentMethod } from '@/types/api';
-import { paymentMethodLabels } from './constants';
+import type { IconComponent } from '@/types/icon';
+import { paymentMethodIcons, paymentMethodLabels } from './constants';
 import { ExpenseLoadError } from './ExpenseLoadError';
 import { ExpenseModal } from './ExpenseModal';
 import {
@@ -34,6 +43,17 @@ import { expenseFormSchema, type ExpenseFormValues } from './schemas';
 
 const NOTES_MAX = 500;
 
+const paymentMethods = Object.keys(paymentMethodLabels) as PaymentMethod[];
+
+// showPicker() throws in some embeds (cross-origin iframes); the input still works by typing.
+const openDatePicker = (input: HTMLInputElement) => {
+  try {
+    input.showPicker();
+  } catch {
+    // Ignore: no picker available here.
+  }
+};
+
 // /expenses/new: a modal over the list.
 export function NewExpensePanel() {
   const [createExpense] = useCreateExpenseMutation();
@@ -43,6 +63,7 @@ export function NewExpensePanel() {
     <ExpenseForm
       title="Add expense"
       description="Record something you've spent."
+      icon={CreditCardPlus}
       submitLabel="Add expense"
       // Mobile money is the most common way to pay in Rwanda, so it's the default.
       defaultValues={{
@@ -55,7 +76,9 @@ export function NewExpensePanel() {
       }}
       onSave={async (input) => {
         await createExpense(input).unwrap();
-        toast.success('Expense added');
+        toast.success('Expense added', {
+          description: `${input.title} · ${formatMoney(input.amount)}`,
+        });
         close();
       }}
     />
@@ -71,7 +94,7 @@ export function EditExpensePanel() {
 
   if (isLoading) {
     return (
-      <ExpenseModal title="Edit expense">
+      <ExpenseModal title="Edit expense" icon={CreditCardEdit}>
         <FormSkeleton />
       </ExpenseModal>
     );
@@ -83,11 +106,12 @@ export function EditExpensePanel() {
       key={expense.id}
       title="Edit expense"
       description={expense.title}
+      icon={CreditCardEdit}
       submitLabel="Save changes"
       defaultValues={toFormValues(expense)}
       onSave={async (input) => {
         await updateExpense({ id: expense.id, body: input }).unwrap();
-        toast.success('Changes saved');
+        toast.success('Changes saved', { description: input.title });
         close();
       }}
     />
@@ -108,12 +132,14 @@ const toFormValues = (expense: Expense): ExpenseFormValues => ({
 function ExpenseForm({
   title,
   description,
+  icon,
   submitLabel,
   defaultValues,
   onSave,
 }: {
   title: string;
   description: string;
+  icon: IconComponent;
   submitLabel: string;
   defaultValues: ExpenseFormValues;
   onSave: (input: ExpenseInput) => Promise<void>;
@@ -130,6 +156,8 @@ function ExpenseForm({
     formState: { errors, isSubmitting },
   } = useForm<ExpenseFormValues, unknown, ExpenseInput>({
     resolver: zodResolver(expenseFormSchema),
+    // Inline validation: a field is checked when you leave it, then live as you fix it.
+    mode: 'onTouched',
     defaultValues,
   });
 
@@ -153,6 +181,7 @@ function ExpenseForm({
     <ExpenseModal
       title={title}
       description={description}
+      icon={icon}
       footer={
         <>
           <Button variant="secondary" onClick={close}>
@@ -167,6 +196,19 @@ function ExpenseForm({
       <form id={formId} onSubmit={onSubmit} noValidate className="flex flex-col gap-5">
         {formError && <FormAlert>{formError}</FormAlert>}
 
+        {/* The amount is what the expense is about, so it leads, large. */}
+        <TextField
+          id="expense-amount"
+          label="Amount"
+          leading="RF"
+          inputMode="numeric"
+          placeholder="0"
+          autoComplete="off"
+          className="h-14 pl-13 text-display-xs font-semibold tabular-nums"
+          error={errors.amount?.message}
+          {...register('amount')}
+        />
+
         <TextField
           id="expense-title"
           label="Title"
@@ -178,93 +220,86 @@ function ExpenseForm({
 
         <div className="grid gap-5 sm:grid-cols-2">
           <TextField
-            id="expense-amount"
-            label="Amount"
-            leading="RF"
-            inputMode="numeric"
-            placeholder="0"
-            autoComplete="off"
-            error={errors.amount?.message}
-            {...register('amount')}
-          />
-          <TextField
             id="expense-date"
             label="Date"
             type="date"
+            icon={Calendar}
+            // Our calendar icon replaces the browser's, so clicking anywhere opens the picker.
+            className="[&::-webkit-calendar-picker-indicator]:hidden"
+            onClick={(event) => openDatePicker(event.currentTarget)}
             error={errors.date?.message}
             {...register('date')}
           />
+
+          <Controller
+            control={control}
+            name="categoryId"
+            render={({ field, fieldState }) => (
+              <SelectField id="expense-category" label="Category" error={fieldState.error?.message}>
+                <Select
+                  value={field.value}
+                  onValueChange={field.onChange}
+                  disabled={!categories.data}
+                >
+                  <SelectTrigger
+                    ref={field.ref}
+                    id="expense-category"
+                    aria-invalid={!!fieldState.error}
+                    onBlur={field.onBlur}
+                    className="w-full"
+                  >
+                    <SelectValue placeholder={categoryPlaceholder} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {categories.data?.map((category) => (
+                      <SelectItem key={category.id} value={category.id}>
+                        <span
+                          aria-hidden
+                          className="size-2 rounded-full"
+                          style={{ backgroundColor: category.color }}
+                        />
+                        {category.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </SelectField>
+            )}
+          />
         </div>
 
-        <Controller
-          control={control}
-          name="categoryId"
-          render={({ field, fieldState }) => (
-            <SelectField id="expense-category" label="Category" error={fieldState.error?.message}>
-              <Select
-                value={field.value}
-                onValueChange={field.onChange}
-                disabled={!categories.data}
-              >
-                <SelectTrigger
-                  ref={field.ref}
-                  id="expense-category"
-                  aria-invalid={!!fieldState.error}
-                  onBlur={field.onBlur}
-                  className="w-full"
+        <FieldSet className="gap-0" data-invalid={!!errors.paymentMethod}>
+          <FieldLegend variant="label" className="text-secondary">
+            Payment method
+          </FieldLegend>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            {paymentMethods.map((method) => {
+              const Icon = paymentMethodIcons[method];
+              return (
+                <label
+                  key={method}
+                  className="flex cursor-pointer flex-col items-start gap-3 rounded-xl border border-secondary bg-primary p-3 shadow-xs transition hover:border-primary has-checked:border-brand has-checked:bg-utility-brand-50 has-checked:ring-1 has-checked:ring-(--border-color-brand) has-focus-visible:ring-4 has-focus-visible:ring-brand-500/24"
                 >
-                  <SelectValue placeholder={categoryPlaceholder} />
-                </SelectTrigger>
-                <SelectContent>
-                  {categories.data?.map((category) => (
-                    <SelectItem key={category.id} value={category.id}>
-                      <span
-                        aria-hidden
-                        className="size-2 rounded-full"
-                        style={{ backgroundColor: category.color }}
-                      />
-                      {category.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </SelectField>
+                  <input
+                    type="radio"
+                    value={method}
+                    className="peer sr-only"
+                    {...register('paymentMethod')}
+                  />
+                  <span className="grid size-8 place-items-center rounded-lg border border-secondary bg-primary text-fg-quaternary shadow-xs peer-checked:border-transparent peer-checked:bg-brand-600 peer-checked:text-white">
+                    <Icon className="size-4" />
+                  </span>
+                  <span className="text-sm font-medium text-secondary peer-checked:text-utility-brand-700">
+                    {paymentMethodLabels[method]}
+                  </span>
+                </label>
+              );
+            })}
+          </div>
+          {errors.paymentMethod && (
+            <FieldError className="mt-1.5">{errors.paymentMethod.message}</FieldError>
           )}
-        />
-
-        <Controller
-          control={control}
-          name="paymentMethod"
-          render={({ field, fieldState }) => (
-            <SelectField
-              id="expense-payment"
-              label="Payment method"
-              error={fieldState.error?.message}
-            >
-              <Select
-                value={field.value}
-                onValueChange={(value) => field.onChange(value as PaymentMethod)}
-              >
-                <SelectTrigger
-                  ref={field.ref}
-                  id="expense-payment"
-                  aria-invalid={!!fieldState.error}
-                  onBlur={field.onBlur}
-                  className="w-full"
-                >
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {Object.entries(paymentMethodLabels).map(([value, label]) => (
-                    <SelectItem key={value} value={value}>
-                      {label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </SelectField>
-          )}
-        />
+        </FieldSet>
 
         <Field data-invalid={!!errors.notes}>
           <div className="flex items-baseline justify-between">
@@ -317,15 +352,29 @@ function SelectField({
   );
 }
 
+// Same shape as the form: big amount, title, date + category, payment cards, notes.
 function FormSkeleton() {
+  const field = (input: string) => (
+    <div className="flex flex-col gap-1.5">
+      <Skeleton className="h-4 w-24" />
+      <Skeleton className={input} />
+    </div>
+  );
+
   return (
     <div aria-busy aria-label="Loading expense" className="flex flex-col gap-5">
-      {Array.from({ length: 5 }, (_, i) => (
-        <div key={i} className="flex flex-col gap-1.5">
-          <Skeleton className="h-4 w-24" />
-          <Skeleton className="h-11 w-full rounded-lg" />
-        </div>
-      ))}
+      {field('h-14 w-full rounded-lg')}
+      {field('h-11 w-full rounded-lg')}
+      <div className="grid gap-5 sm:grid-cols-2">
+        {field('h-11 w-full rounded-lg')}
+        {field('h-11 w-full rounded-lg')}
+      </div>
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        {Array.from({ length: 4 }, (_, i) => (
+          <Skeleton key={i} className="h-23 rounded-xl" />
+        ))}
+      </div>
+      {field('h-28 w-full rounded-lg')}
     </div>
   );
 }

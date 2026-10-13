@@ -25,9 +25,10 @@ const addExpenseButton = (
 export default function ExpensesPage() {
   // Moves into the Redux filters slice with the rest of the query on Tuesday.
   const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(PAGE_SIZE);
   const { data, error, isLoading, isFetching, refetch } = useGetExpensesQuery({
     page,
-    limit: PAGE_SIZE,
+    limit: pageSize,
   });
 
   // Deleting the last expense on the last page leaves us past the end: step back to the
@@ -81,7 +82,18 @@ export default function ExpensesPage() {
             className={cn('transition-opacity', isFetching && 'opacity-60')}
           >
             <ExpenseList expenses={data.data} grouped />
-            <Pagination page={data.page} totalPages={data.totalPages} onPageChange={setPage} />
+            <Pagination
+              page={data.page}
+              totalPages={data.totalPages}
+              total={data.total}
+              pageSize={pageSize}
+              onPageChange={setPage}
+              // A new page size changes what "page 3" means, so start again from the top.
+              onPageSizeChange={(size) => {
+                setPageSize(size);
+                setPage(1);
+              }}
+            />
           </div>
         )}
       </section>

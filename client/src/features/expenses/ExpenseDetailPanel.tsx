@@ -1,11 +1,12 @@
-import { Edit01, Trash01 } from '@untitledui/icons';
+import { AlignLeft, Calendar, Clock, Edit01, Tag01, Trash01 } from '@untitledui/icons';
 import { useState, type ReactNode } from 'react';
 import { Link, useParams } from 'react-router';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { formatDate, formatDateTime, formatMoney } from '@/lib/format';
+import type { IconComponent } from '@/types/icon';
 import { CategoryAvatar, CategoryBadge } from './CategoryMarks';
-import { paymentMethodLabels } from './constants';
+import { paymentMethodIcons, paymentMethodLabels } from './constants';
 import { DeleteExpenseDialog } from './DeleteExpenseDialog';
 import { ExpenseLoadError } from './ExpenseLoadError';
 import { ExpensePanel } from './ExpensePanel';
@@ -52,34 +53,48 @@ export default function ExpenseDetailPanel() {
         </>
       }
     >
-      <div className="flex items-center gap-4 rounded-xl bg-secondary p-4">
-        <CategoryAvatar category={expense.category} className="size-12 text-lg" />
-        <div>
-          <p className="text-sm font-medium text-tertiary">Amount</p>
-          <p className="text-display-xs font-semibold text-primary tabular-nums">
-            {formatMoney(expense.amount)}
-          </p>
+      {/* Hero: the amount on a soft wash of the category colour. */}
+      <div
+        className="relative overflow-hidden rounded-2xl border border-secondary p-5"
+        style={{
+          backgroundImage: `linear-gradient(135deg, color-mix(in srgb, ${expense.category.color} 14%, transparent), transparent 70%)`,
+        }}
+      >
+        <div className="flex items-start justify-between gap-3">
+          <CategoryAvatar category={expense.category} className="size-12 text-lg" />
+          <CategoryBadge category={expense.category} />
         </div>
+        <p className="mt-5 text-sm font-medium text-tertiary">Amount</p>
+        <p className="text-display-sm font-semibold text-primary tabular-nums">
+          {formatMoney(expense.amount)}
+        </p>
       </div>
 
-      <dl className="mt-2 divide-y divide-(--border-color-secondary)">
-        <Field label="Date">{formatDate(expense.date)}</Field>
-        <Field label="Category">
-          <CategoryBadge category={expense.category} />
+      <dl className="mt-6 flex flex-col gap-5">
+        <Field icon={Calendar} label="Date">
+          {formatDate(expense.date)}
         </Field>
-        <Field label="Payment method">{paymentMethodLabels[expense.paymentMethod]}</Field>
-        <Field label="Notes">
+        <Field icon={Tag01} label="Category">
+          {expense.category.name}
+        </Field>
+        <Field icon={paymentMethodIcons[expense.paymentMethod]} label="Payment method">
+          {paymentMethodLabels[expense.paymentMethod]}
+        </Field>
+        <Field icon={AlignLeft} label="Notes">
           {expense.notes ? (
             <span className="whitespace-pre-line">{expense.notes}</span>
           ) : (
-            <span className="text-quaternary">No notes</span>
+            <span className="font-normal text-quaternary">No notes</span>
           )}
         </Field>
-        <Field label="Added">{formatDateTime(expense.createdAt)}</Field>
-        {expense.updatedAt !== expense.createdAt && (
-          <Field label="Last updated">{formatDateTime(expense.updatedAt)}</Field>
-        )}
       </dl>
+
+      <p className="mt-6 flex items-center gap-1.5 border-t border-secondary pt-4 text-xs text-tertiary">
+        <Clock className="size-3.5 shrink-0" />
+        Added {formatDateTime(expense.createdAt)}
+        {expense.updatedAt !== expense.createdAt &&
+          ` · Updated ${formatDateTime(expense.updatedAt)}`}
+      </p>
 
       <DeleteExpenseDialog
         expense={confirmingDelete ? expense : null}
@@ -90,12 +105,28 @@ export default function ExpenseDetailPanel() {
   );
 }
 
-// One description-list row: label on the left, value on the right, stacking on narrow panels.
-function Field({ label, children }: { label: string; children: ReactNode }) {
+// One description-list row: an icon tile, then the label with the value underneath.
+function Field({
+  icon: Icon,
+  label,
+  children,
+}: {
+  icon: IconComponent;
+  label: string;
+  children: ReactNode;
+}) {
   return (
-    <div className="grid gap-1 py-4 sm:grid-cols-[8.5rem_1fr] sm:gap-4">
-      <dt className="text-sm font-medium text-tertiary">{label}</dt>
-      <dd className="min-w-0 text-sm font-medium break-words text-primary">{children}</dd>
+    <div className="flex gap-3">
+      <span
+        aria-hidden
+        className="grid size-10 shrink-0 place-items-center rounded-lg border border-secondary bg-primary text-fg-quaternary shadow-xs"
+      >
+        <Icon className="size-5" />
+      </span>
+      <div className="min-w-0 pt-0.5">
+        <dt className="text-sm text-tertiary">{label}</dt>
+        <dd className="text-sm font-medium break-words text-primary">{children}</dd>
+      </div>
     </div>
   );
 }
@@ -103,13 +134,18 @@ function Field({ label, children }: { label: string; children: ReactNode }) {
 function DetailSkeleton() {
   return (
     <div aria-busy aria-label="Loading expense">
-      <Skeleton className="h-20 rounded-xl" />
-      {Array.from({ length: 5 }, (_, i) => (
-        <div key={i} className="flex justify-between gap-4 py-4">
-          <Skeleton className="h-4 w-24" />
-          <Skeleton className="h-4 w-32" />
-        </div>
-      ))}
+      <Skeleton className="h-40 rounded-2xl" />
+      <div className="mt-6 flex flex-col gap-5">
+        {Array.from({ length: 4 }, (_, i) => (
+          <div key={i} className="flex gap-3">
+            <Skeleton className="size-10 rounded-lg" />
+            <div className="flex flex-col gap-1.5 pt-0.5">
+              <Skeleton className="h-4 w-20" />
+              <Skeleton className="h-4 w-32" />
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

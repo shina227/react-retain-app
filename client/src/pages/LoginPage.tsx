@@ -19,7 +19,11 @@ export default function LoginPage() {
     handleSubmit,
     setError,
     formState: { errors, isSubmitting },
-  } = useForm({ resolver: zodResolver(loginSchema), defaultValues: { email: '', password: '' } });
+  } = useForm({
+    resolver: zodResolver(loginSchema),
+    mode: 'onTouched',
+    defaultValues: { email: '', password: '' },
+  });
 
   const onSubmit = handleSubmit(async (values) => {
     setFormError(null);

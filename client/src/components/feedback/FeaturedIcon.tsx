@@ -27,3 +27,17 @@ export function FeaturedIcon({
     </div>
   );
 }
+
+// Untitled's modal backdrop: 336px of 24px-spaced rings, fading out from the middle.
+// Position it with className so its centre sits on the featured icon's centre.
+export function FeaturedIconRings({ className }: { className: string }) {
+  return (
+    <span
+      aria-hidden
+      className={cn(
+        'pointer-events-none absolute size-84 bg-[repeating-radial-gradient(circle,transparent_0_23px,var(--border-color-secondary)_23px_24px)] mask-[radial-gradient(closest-side,black,transparent)]',
+        className,
+      )}
+    />
+  );
+}

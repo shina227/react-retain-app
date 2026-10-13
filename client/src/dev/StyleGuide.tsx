@@ -271,8 +271,23 @@ export default function StyleGuide() {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <Button variant="secondary" onClick={() => toast.success('Expense added')}>
+          <Button
+            variant="secondary"
+            onClick={() =>
+              toast.success('Expense added', { description: 'Weekly groceries · RF 12,550' })
+            }
+          >
             Show toast
+          </Button>
+          <Button
+            variant="secondary"
+            onClick={() =>
+              toast.error("Couldn't delete the expense", {
+                description: 'Check your connection and try again.',
+              })
+            }
+          >
+            Show error toast
           </Button>
         </div>
       </Section>

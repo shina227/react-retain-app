@@ -2,12 +2,14 @@ import type { ComponentProps, ReactNode } from 'react';
 import { Field, FieldDescription, FieldError, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
+import type { IconComponent } from '@/types/icon';
 
 export type TextFieldProps = ComponentProps<typeof Input> & {
   id: string;
-  label: string;
+  label: ReactNode;
   error?: string;
   hint?: string;
+  icon?: IconComponent; // 20px icon inside the input, on the left
   leading?: string; // fixed text inside the input, on the left (e.g. a currency)
   trailing?: ReactNode; // e.g. an icon button inside the input, on the right
 };
@@ -18,6 +20,7 @@ export function TextField({
   label,
   error,
   hint,
+  icon: Icon,
   leading,
   trailing,
   className,
@@ -29,7 +32,7 @@ export function TextField({
       id={id}
       aria-invalid={!!error}
       aria-describedby={error || hint ? messageId : undefined}
-      className={cn(leading && 'pl-12', className)}
+      className={cn(Icon && 'pl-10.5', leading && 'pl-12', className)}
       {...inputProps}
     />
   );
@@ -37,8 +40,11 @@ export function TextField({
   return (
     <Field data-invalid={!!error}>
       <FieldLabel htmlFor={id}>{label}</FieldLabel>
-      {leading || trailing ? (
+      {Icon || leading || trailing ? (
         <div className="relative">
+          {Icon && (
+            <Icon className="pointer-events-none absolute top-1/2 left-3.5 size-5 -translate-y-1/2 text-fg-quaternary" />
+          )}
           {leading && (
             <span
               aria-hidden

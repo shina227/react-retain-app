@@ -22,6 +22,7 @@ export default function RegisterPage() {
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(registerSchema),
+    mode: 'onTouched',
     defaultValues: { name: '', email: '', password: '' },
   });
 
