@@ -4,7 +4,7 @@ Base URL: `https://retain-api-dwgm.onrender.com/api` (local: `http://localhost:4
 
 ## Conventions
 
-- **Money** is always an integer in minor units (pesewas). `12550` = GHS 125.50.
+- **Money** is always an integer number of Rwandan francs (RWF has no subunit). `12550` = RWF 12,550.
 - **Dates** (`Expense.date`) are `YYYY-MM-DD`. **Months** are `YYYY-MM`.
 - **Timestamps** (`createdAt`, `updatedAt`) are ISO 8601.
 - **Auth levels:** `public` · `user` (any signed-in user) · `admin` (role `ADMIN`).
@@ -121,7 +121,7 @@ Errors: `401 UNAUTHORIZED` (no `Bearer` header) · `401 INVALID_TOKEN` (bad sign
 | Field | Rule |
 |---|---|
 | `title` | string, 1–100 chars (trimmed) |
-| `amount` | integer pesewas, > 0, ≤ 1,000,000,000 |
+| `amount` | integer francs, > 0, ≤ 1,000,000,000 |
 | `categoryId` | must be an existing category (`400 INVALID_CATEGORY` otherwise) |
 | `date` | `YYYY-MM-DD`, a real calendar date |
 | `paymentMethod` | `CASH` · `CARD` · `MOBILE_MONEY` · `BANK_TRANSFER` |
@@ -138,7 +138,7 @@ The owner always comes from the token. Any `userId` in the body is ignored.
 | `search` | case-insensitive match on `title` or `notes` |
 | `categoryId`, `paymentMethod` | exact match |
 | `startDate`, `endDate` | `YYYY-MM-DD`, both inclusive; `startDate > endDate` → 400 |
-| `minAmount`, `maxAmount` | pesewas, both inclusive; `min > max` → 400 |
+| `minAmount`, `maxAmount` | francs, both inclusive; `min > max` → 400 |
 | `sortBy` | `date` (default) or `amount`; anything else → 400 |
 | `sortOrder` | `desc` (default) or `asc`; ties broken by `createdAt`, then `id` |
 | `page` | ≥ 1, default 1 |
@@ -203,7 +203,7 @@ Errors: `400 DEFAULT_CATEGORY` (the default can't be deleted) · `404` (unknown 
 { "amount": 250000 }
 ```
 
-`amount` is integer pesewas, > 0, ≤ 1,000,000,000.
+`amount` is integer francs, > 0, ≤ 1,000,000,000.
 
 ### Dashboard and insights
 | | Method | Path | Auth | Description |

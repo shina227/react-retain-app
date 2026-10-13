@@ -1,4 +1,5 @@
-// Mirrors the server's responses (see docs/api.md). Money is integer pesewas; dates are YYYY-MM-DD.
+// Mirrors the server's responses (see docs/api.md).
+// Money is an integer number of Rwandan francs (RWF has no subunit); dates are YYYY-MM-DD.
 
 export type Role = 'USER' | 'ADMIN';
 

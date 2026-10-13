@@ -90,4 +90,4 @@ Inter (variable). `text-xs` 12/18, `text-sm` 14/20, `text-base` 16/24, `text-lg`
 
 ## Money and dates
 
-Amounts are stored in pesewas and shown as `GH₵1,250.00` with `Intl.NumberFormat`. Dates show as `5 Oct 2026`.
+Amounts are stored as whole Rwandan francs and shown as `RF 12,550` with `Intl.NumberFormat` (`en-RW`). Dates show as `5 Oct 2026`.

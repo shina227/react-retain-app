@@ -1,11 +1,11 @@
 import { z } from 'zod';
 
-const MAX_AMOUNT = 1_000_000_000; // GHS 10M in pesewas; keeps us well inside Postgres Int
+const MAX_AMOUNT = 1_000_000_000; // RWF 1 billion; keeps us well inside Postgres Int
 
-// A positive amount in minor units (pesewas).
+// A positive whole number of Rwandan francs (RWF has no subunit).
 export const money = z
   .number()
-  .int('Amount must be in pesewas')
+  .int('Amount must be a whole number of francs')
   .positive('Amount must be greater than 0')
   .max(MAX_AMOUNT, 'Amount is too large');
 

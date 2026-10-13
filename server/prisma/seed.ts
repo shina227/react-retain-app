@@ -35,41 +35,46 @@ const random = createRandom(20261019);
 const randInt = (min: number, max: number) => Math.floor(random() * (max - min + 1)) + min;
 const pick = <T>(items: readonly T[]): T => items[Math.floor(random() * items.length)]!;
 
-// weight = relative usage; [min, max] = amount range in GHS
+// weight = relative usage; [min, max] = amount range in RWF
 const CATEGORIES = [
-  { name: 'Uncategorized', color: '#94a3b8', isDefault: true, weight: 1, range: [10, 80] },
-  { name: 'Food & Dining', color: '#f97316', weight: 22, range: [25, 180] },
-  { name: 'Groceries', color: '#22c55e', weight: 18, range: [60, 450] },
-  { name: 'Transport', color: '#3b82f6', weight: 16, range: [15, 120] },
-  { name: 'Utilities', color: '#eab308', weight: 8, range: [80, 400] },
-  { name: 'Shopping', color: '#ec4899', weight: 8, range: [50, 700] },
-  { name: 'Entertainment', color: '#a855f7', weight: 6, range: [30, 250] },
-  { name: 'Health', color: '#ef4444', weight: 4, range: [40, 600] },
-  { name: 'Housing & Rent', color: '#0ea5e9', weight: 3, range: [900, 2500] },
-  { name: 'Education', color: '#14b8a6', weight: 2, range: [100, 900] },
-  { name: 'Travel', color: '#6366f1', weight: 1, range: [200, 1500] },
-  { name: 'Gifts & Donations', color: '#f43f5e', weight: 0, range: [50, 300] }, // intentionally unused
+  { name: 'Uncategorized', color: '#94a3b8', isDefault: true, weight: 1, range: [1_000, 8_000] },
+  { name: 'Food & Dining', color: '#f97316', weight: 22, range: [2_000, 15_000] },
+  { name: 'Groceries', color: '#22c55e', weight: 18, range: [5_000, 40_000] },
+  { name: 'Transport', color: '#3b82f6', weight: 16, range: [500, 10_000] },
+  { name: 'Utilities', color: '#eab308', weight: 8, range: [5_000, 35_000] },
+  { name: 'Shopping', color: '#ec4899', weight: 8, range: [5_000, 60_000] },
+  { name: 'Entertainment', color: '#a855f7', weight: 6, range: [3_000, 25_000] },
+  { name: 'Health', color: '#ef4444', weight: 4, range: [3_000, 50_000] },
+  { name: 'Housing & Rent', color: '#0ea5e9', weight: 3, range: [80_000, 250_000] },
+  { name: 'Education', color: '#14b8a6', weight: 2, range: [10_000, 90_000] },
+  { name: 'Travel', color: '#6366f1', weight: 1, range: [20_000, 150_000] },
+  { name: 'Gifts & Donations', color: '#f43f5e', weight: 0, range: [5_000, 30_000] }, // intentionally unused
 ] as const;
 
 const TITLES: Record<string, readonly string[]> = {
   Uncategorized: ['Miscellaneous', 'Cash withdrawal fee', 'Bank charges'],
   'Food & Dining': [
     'Lunch at work',
-    'Jollof & chicken',
+    'Brochettes & chips',
     'Coffee',
     'Dinner out',
-    'Waakye breakfast',
+    'Isombe lunch',
     'Pizza night',
   ],
   Groceries: ['Weekly groceries', 'Market run', 'Supermarket top-up', 'Fruit & vegetables'],
-  Transport: ['Uber ride', 'Trotro fare', 'Fuel', 'Bolt ride', 'Taxi to airport'],
-  Utilities: ['Electricity (ECG)', 'Water bill', 'Internet subscription', 'Mobile data bundle'],
+  Transport: ['Moto ride', 'Bus fare', 'Fuel', 'Yego cab', 'Taxi to airport'],
+  Utilities: [
+    'Electricity (Cash Power)',
+    'Water bill (WASAC)',
+    'Internet subscription',
+    'Mobile data bundle',
+  ],
   Shopping: ['New shoes', 'Clothing', 'Phone accessories', 'Home items'],
   Entertainment: ['Cinema tickets', 'Netflix', 'Spotify', 'Concert tickets', 'Game night'],
   Health: ['Pharmacy', 'Doctor visit', 'Gym membership', 'Lab tests'],
   'Housing & Rent': ['Monthly rent', 'Home repairs'],
   Education: ['Online course', 'Textbooks', 'Workshop fee'],
-  Travel: ['Weekend trip to Kumasi', 'Hotel stay', 'Bus to Cape Coast'],
+  Travel: ['Weekend trip to Musanze', 'Hotel stay', 'Bus to Rubavu'],
   'Gifts & Donations': ['Birthday gift'],
 };
 
@@ -95,11 +100,26 @@ const NOTES = [
 
 // budgetRatios: spend / budget for [two months ago, last month, this month] → drives within / approaching / over
 const DEMO_USERS = [
-  { name: 'Ama Mensah', email: 'demo@example.com', expenses: 45, budgetRatios: [0.6, 1.15, 0.86] },
-  { name: 'Kofi Boateng', email: 'kofi@example.com', expenses: 30, budgetRatios: [0.9, 0.7, 1.1] },
-  { name: 'Esi Owusu', email: 'esi@example.com', expenses: 28, budgetRatios: [0.5, 0.82, 0.4] },
-  { name: 'Yaw Asante', email: 'yaw@example.com', expenses: 25, budgetRatios: [1.2, 0.95, 0.65] },
-  { name: 'Akua Darko', email: 'akua@example.com', expenses: 22, budgetRatios: [0.75, 0.55, 0.9] },
+  { name: 'Aline Uwase', email: 'demo@example.com', expenses: 45, budgetRatios: [0.6, 1.15, 0.86] },
+  { name: 'Eric Mugisha', email: 'eric@example.com', expenses: 30, budgetRatios: [0.9, 0.7, 1.1] },
+  {
+    name: 'Grace Uwimana',
+    email: 'grace@example.com',
+    expenses: 28,
+    budgetRatios: [0.5, 0.82, 0.4],
+  },
+  {
+    name: 'Jean Habimana',
+    email: 'jean@example.com',
+    expenses: 25,
+    budgetRatios: [1.2, 0.95, 0.65],
+  },
+  {
+    name: 'Divine Ingabire',
+    email: 'divine@example.com',
+    expenses: 22,
+    budgetRatios: [0.75, 0.55, 0.9],
+  },
 ] as const;
 
 /** First day of the month `offset` months before the current one, as UTC midnight. */
@@ -178,7 +198,7 @@ async function main() {
         userId: user.id,
         categoryId: categoryIds.get(category.name)!,
         title: pick(TITLES[category.name]!),
-        amount: randInt(min, max) * 100 + pick([0, 0, 50, 99]), // minor units
+        amount: Math.round(randInt(min, max) / 100) * 100, // whole francs, to the nearest 100
         date: randomDateInMonth(months[i % months.length]!),
         paymentMethod: pick(PAYMENT_METHODS),
         notes: pick(NOTES),

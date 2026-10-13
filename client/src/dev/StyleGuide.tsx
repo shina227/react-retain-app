@@ -59,14 +59,14 @@ const rows = [
     category: 'Food',
     method: 'Cash',
     date: '5 Oct 2026',
-    amount: 'GH₵125.50',
+    amount: 'RF 12,550',
   },
   {
     title: 'Trotro to work',
     category: 'Transport',
     method: 'Mobile money',
     date: '3 Oct 2026',
-    amount: 'GH₵12.00',
+    amount: 'RF 1,200',
   },
 ];
 
@@ -163,19 +163,19 @@ export default function StyleGuide() {
           <Card>
             <CardHeader>
               <CardDescription>Total spent</CardDescription>
-              <CardTitle className="text-display-sm">GH₵2,120.00</CardTitle>
+              <CardTitle className="text-display-sm">RF 212,000</CardTitle>
             </CardHeader>
           </Card>
           <Card>
             <CardHeader>
               <CardDescription>Remaining</CardDescription>
-              <CardTitle className="text-display-sm">GH₵380.00</CardTitle>
+              <CardTitle className="text-display-sm">RF 38,000</CardTitle>
             </CardHeader>
           </Card>
           <Card>
             <CardHeader>
               <CardTitle>October budget</CardTitle>
-              <CardDescription>GH₵2,120 of GH₵2,500</CardDescription>
+              <CardDescription>RF 212,000 of RF 250,000</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-3">
               <Progress value={84.8} />

@@ -1,12 +1,18 @@
 import { createBrowserRouter, Navigate, type RouteObject } from 'react-router';
 import StyleGuide from '@/dev/StyleGuide';
+import ExpenseDetailPanel from '@/features/expenses/ExpenseDetailPanel';
+import { EditExpensePanel, NewExpensePanel } from '@/features/expenses/ExpenseFormModal';
 import { AppLayout } from '@/layouts/AppLayout';
 import { AuthLayout } from '@/layouts/AuthLayout';
-import AdminPage from '@/pages/AdminPage';
+import AdminCategoriesPage from '@/pages/AdminCategoriesPage';
+import AdminOverviewPage from '@/pages/AdminOverviewPage';
+import BudgetsPage from '@/pages/BudgetsPage';
 import DashboardPage from '@/pages/DashboardPage';
 import ExpensesPage from '@/pages/ExpensesPage';
 import LoginPage from '@/pages/LoginPage';
 import RegisterPage from '@/pages/RegisterPage';
+import ReportsPage from '@/pages/ReportsPage';
+import SettingsPage from '@/pages/SettingsPage';
 import { AdminRoute, GuestRoute, ProtectedRoute } from './guards';
 
 const devRoutes: RouteObject[] = import.meta.env.DEV
@@ -34,8 +40,26 @@ export const router = createBrowserRouter([
         children: [
           { path: '/', element: <Navigate to="/dashboard" replace /> },
           { path: '/dashboard', element: <DashboardPage /> },
-          { path: '/expenses', element: <ExpensesPage /> },
-          { element: <AdminRoute />, children: [{ path: '/admin', element: <AdminPage /> }] },
+          {
+            // Detail (slideout) and add/edit (modal) open over the list, so they nest under it.
+            path: '/expenses',
+            element: <ExpensesPage />,
+            children: [
+              { path: 'new', element: <NewExpensePanel /> },
+              { path: ':id', element: <ExpenseDetailPanel /> },
+              { path: ':id/edit', element: <EditExpensePanel /> },
+            ],
+          },
+          { path: '/budgets', element: <BudgetsPage /> },
+          { path: '/reports', element: <ReportsPage /> },
+          { path: '/settings', element: <SettingsPage /> },
+          {
+            element: <AdminRoute />,
+            children: [
+              { path: '/admin', element: <AdminOverviewPage /> },
+              { path: '/admin/categories', element: <AdminCategoriesPage /> },
+            ],
+          },
         ],
       },
     ],
