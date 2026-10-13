@@ -1,4 +1,4 @@
-import { CircleAlert, Plus, Receipt } from 'lucide-react';
+import { AlertCircle, CreditCardDown, Plus } from '@untitledui/icons';
 import { useState } from 'react';
 import { Link, Outlet } from 'react-router';
 import { EmptyState } from '@/components/feedback/EmptyState';
@@ -62,14 +62,14 @@ export default function ExpensesPage() {
         ) : error ? (
           <EmptyState
             tone="error"
-            icon={CircleAlert}
+            icon={AlertCircle}
             title="Couldn't load your expenses"
             description={'message' in error ? error.message : 'Something went wrong. Try again.'}
             actions={<Button onClick={refetch}>Try again</Button>}
           />
         ) : !data?.total ? (
           <EmptyState
-            icon={Receipt}
+            icon={CreditCardDown}
             title="No expenses yet"
             description="Add your first expense to start seeing where your money goes."
             actions={addExpenseButton}

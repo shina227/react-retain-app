@@ -1,61 +1,82 @@
 import {
-  ChartPie,
-  LayoutDashboard,
-  PiggyBank,
-  Receipt,
-  Settings,
-  ShieldCheck,
-  Tags,
-  type LucideIcon,
-} from 'lucide-react';
+  CoinsStacked01,
+  CreditCardDown,
+  Grid01,
+  PieChart03,
+  Settings01,
+  Tag01,
+  Users01,
+} from '@untitledui/icons';
 import { NavLink } from 'react-router';
-import { Logo } from '@/components/Logo';
+import { Logomark } from '@/components/Logo';
 import { useAuth } from '@/features/auth/AuthContext';
 import { cn } from '@/lib/utils';
+import type { IconComponent } from '@/types/icon';
 import { AccountCard } from './AccountCard';
 
 // `end` marks items that are only active on their exact path (Overview isn't active on
 // /admin/categories); the rest stay active on nested routes like /expenses/:id.
-type NavItem = { to: string; label: string; icon: LucideIcon; end?: boolean };
+type NavItem = { to: string; label: string; icon: IconComponent; end?: boolean };
+type NavGroup = { title: string; items: NavItem[] };
 
-const mainNav: NavItem[] = [
-  { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { to: '/expenses', label: 'Expenses', icon: Receipt },
-  { to: '/budgets', label: 'Budgets', icon: PiggyBank },
-  { to: '/reports', label: 'Reports', icon: ChartPie },
+// Admins get their own console rather than the personal-finance pages.
+const userNav: NavGroup[] = [
+  {
+    title: 'Workspace',
+    items: [
+      { to: '/dashboard', label: 'Overview', icon: Grid01 },
+      { to: '/expenses', label: 'Expenses', icon: CreditCardDown },
+      { to: '/budgets', label: 'Budgets', icon: CoinsStacked01 },
+      { to: '/reports', label: 'Spending analytics', icon: PieChart03 },
+    ],
+  },
+  { title: 'Preferences', items: [{ to: '/settings', label: 'Settings', icon: Settings01 }] },
 ];
-const adminNav: NavItem[] = [
-  { to: '/admin', label: 'Overview', icon: ShieldCheck, end: true },
-  { to: '/admin/categories', label: 'Categories', icon: Tags },
+const adminNav: NavGroup[] = [
+  {
+    title: 'Management',
+    items: [
+      { to: '/admin', label: 'Overview', icon: Grid01, end: true },
+      { to: '/admin/users', label: 'Users', icon: Users01 },
+      { to: '/admin/expenses', label: 'All expenses', icon: CreditCardDown },
+      { to: '/admin/categories', label: 'Categories', icon: Tag01 },
+    ],
+  },
+  { title: 'Account', items: [{ to: '/settings', label: 'Settings', icon: Settings01 }] },
 ];
-const footerNav: NavItem[] = [{ to: '/settings', label: 'Settings', icon: Settings }];
 
-function NavSection({ items, onNavigate }: { items: NavItem[]; onNavigate?: () => void }) {
+function NavSection({ title, items, onNavigate }: NavGroup & { onNavigate?: () => void }) {
   return (
-    <ul className="flex flex-col gap-0.5 px-4">
-      {items.map(({ to, label, icon: Icon, end }) => (
-        <li key={to}>
-          <NavLink
-            to={to}
-            end={end}
-            onClick={onNavigate}
-            className={({ isActive }) =>
-              cn(
-                'flex h-9 items-center gap-2 rounded-md p-2 text-sm font-semibold text-secondary transition hover:bg-primary_hover hover:text-secondary_hover',
-                isActive && 'bg-active text-secondary_hover',
-              )
-            }
-          >
-            <Icon aria-hidden className="size-5 text-fg-quaternary" />
-            {label}
-          </NavLink>
-        </li>
-      ))}
-    </ul>
+    <section className="flex flex-col gap-1 border-t border-secondary px-4 pt-5 pb-4">
+      <h2 className="px-2 text-xs font-semibold tracking-wide text-quaternary uppercase">
+        {title}
+      </h2>
+      <ul className="flex flex-col gap-0.5">
+        {items.map(({ to, label, icon: Icon, end }) => (
+          <li key={to}>
+            <NavLink
+              to={to}
+              end={end}
+              onClick={onNavigate}
+              className={({ isActive }) =>
+                cn(
+                  'group flex h-10 items-center gap-3 rounded-md px-3 text-sm font-semibold text-secondary transition hover:bg-primary_hover hover:text-secondary_hover',
+                  isActive &&
+                    'active bg-utility-brand-50 text-utility-brand-700 hover:bg-utility-brand-50 hover:text-utility-brand-700',
+                )
+              }
+            >
+              <Icon className="size-5 shrink-0 text-fg-quaternary group-[.active]:text-utility-brand-700" />
+              {label}
+            </NavLink>
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }
 
-// Untitled sidebar content: logo, the main nav, an admin section for admins, then Settings and
+// Untitled sidebar content: logo with the console name, grouped nav for the user's role, then
 // the account card pinned to the bottom.
 // Shared by the desktop sidebar and the mobile drawer; `onNavigate` closes the drawer.
 export function Sidebar({
@@ -66,30 +87,28 @@ export function Sidebar({
   onNavigate?: () => void;
 }) {
   const { isAdmin } = useAuth();
+  const groups = isAdmin ? adminNav : userNav;
 
   return (
     <div className={cn('flex h-full flex-col justify-between', className)}>
       <div>
-        <div className="p-5">
-          <Logo />
+        <div className="flex items-center gap-3 p-5">
+          <Logomark size="md" />
+          <div className="flex flex-col">
+            <span className="text-base font-semibold text-primary">Retain</span>
+            <span className="text-xs font-medium tracking-wide text-tertiary uppercase">
+              {isAdmin ? 'Admin console' : 'Personal finance'}
+            </span>
+          </div>
         </div>
         <nav aria-label="Main">
-          <NavSection items={mainNav} onNavigate={onNavigate} />
-          {isAdmin && (
-            <>
-              <h2 className="mt-5 mb-1 px-6 text-xs font-semibold text-quaternary">Admin</h2>
-              <NavSection items={adminNav} onNavigate={onNavigate} />
-            </>
-          )}
+          {groups.map((group) => (
+            <NavSection key={group.title} {...group} onNavigate={onNavigate} />
+          ))}
         </nav>
       </div>
-      <div className="flex flex-col gap-4 pb-4">
-        <nav aria-label="Settings">
-          <NavSection items={footerNav} onNavigate={onNavigate} />
-        </nav>
-        <div className="px-4">
-          <AccountCard />
-        </div>
+      <div className="px-4 pb-4">
+        <AccountCard />
       </div>
     </div>
   );

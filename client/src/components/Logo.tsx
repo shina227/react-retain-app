@@ -1,4 +1,4 @@
-import { Wallet } from 'lucide-react';
+import { Wallet02 } from '@untitledui/icons';
 import { cn } from '@/lib/utils';
 
 const sizes = {
@@ -18,7 +18,7 @@ export function Logomark({ size = 'md' }: { size?: keyof typeof sizes }) {
     >
       <span className="absolute inset-0 bg-[linear-gradient(to_right,rgb(255_255_255/0.1)_1px,transparent_1px),linear-gradient(to_bottom,rgb(255_255_255/0.1)_1px,transparent_1px)] bg-size-[25%_25%]" />
       <span className="absolute inset-0 bg-linear-to-b from-white/20 to-black/10" />
-      <Wallet className={cn('relative text-white', sizes[size].icon)} strokeWidth={2.25} />
+      <Wallet02 className={cn('relative text-white', sizes[size].icon)} strokeWidth={2.25} />
     </span>
   );
 }
@@ -29,7 +29,13 @@ const wordmarks = {
 };
 
 // Logomark + wordmark, as in the Untitled sidebar header.
-export function Logo({ size = 'sm', className }: { size?: keyof typeof sizes; className?: string }) {
+export function Logo({
+  size = 'sm',
+  className,
+}: {
+  size?: keyof typeof sizes;
+  className?: string;
+}) {
   return (
     <span className={cn('flex items-center gap-2', size === 'md' && 'gap-2.5', className)}>
       <Logomark size={size} />

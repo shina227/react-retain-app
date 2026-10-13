@@ -1,4 +1,4 @@
-import { ChevronDown, LogOut, Plus, Settings, Trash2, User } from 'lucide-react';
+import { ChevronDown, LogOut01, Plus, Settings01, Trash01, User01 } from '@untitledui/icons';
 import { toast } from 'sonner';
 import { BudgetStatusBadge } from '@/features/budgets/BudgetStatusBadge';
 import { Badge } from '@/components/ui/badge';
@@ -86,7 +86,7 @@ export default function StyleGuide() {
           <Button variant="secondary">Secondary</Button>
           <Button variant="ghost">Tertiary</Button>
           <Button variant="destructive">
-            <Trash2 /> Delete
+            <Trash01 /> Delete
           </Button>
           <Button variant="link">Link</Button>
           <Button disabled>Disabled</Button>
@@ -97,7 +97,7 @@ export default function StyleGuide() {
           <Button size="lg">Large</Button>
           <Button size="xl">Extra large</Button>
           <Button size="icon" variant="secondary" aria-label="Settings">
-            <Settings />
+            <Settings01 />
           </Button>
         </div>
       </Section>
@@ -262,11 +262,11 @@ export default function StyleGuide() {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
               <DropdownMenuItem>
-                <User /> Profile
+                <User01 /> Profile
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem>
-                <LogOut /> Log out
+                <LogOut01 /> Log out
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

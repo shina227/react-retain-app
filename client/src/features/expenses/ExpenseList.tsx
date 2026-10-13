@@ -1,4 +1,4 @@
-import { Pencil, Trash2 } from 'lucide-react';
+import { Edit01, Trash01 } from '@untitledui/icons';
 import { Fragment, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import {
@@ -145,7 +145,7 @@ function ExpenseTable({
                         className="text-fg-quaternary hover:text-error-primary"
                         onClick={() => onDelete(expense)}
                       >
-                        <Trash2 />
+                        <Trash01 />
                       </Button>
                       <Button
                         asChild
@@ -158,7 +158,7 @@ function ExpenseTable({
                           state={canGoBack}
                           aria-label={`Edit ${expense.title}`}
                         >
-                          <Pencil />
+                          <Edit01 />
                         </Link>
                       </Button>
                     </div>

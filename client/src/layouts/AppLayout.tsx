@@ -1,4 +1,4 @@
-import { Menu } from 'lucide-react';
+import { Menu02 } from '@untitledui/icons';
 import { useState } from 'react';
 import { Outlet } from 'react-router';
 import { Logo } from '@/components/Logo';
@@ -23,7 +23,7 @@ export function AppLayout() {
           <Sheet open={navOpen} onOpenChange={setNavOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon-sm" aria-label="Open navigation">
-                <Menu />
+                <Menu02 />
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="w-70 p-0">

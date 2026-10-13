@@ -1,4 +1,4 @@
-import { CircleAlert, SearchX } from 'lucide-react';
+import { AlertCircle, SearchLg } from '@untitledui/icons';
 import { EmptyState } from '@/components/feedback/EmptyState';
 import { Button } from '@/components/ui/button';
 import { isApiError } from '@/lib/api';
@@ -24,7 +24,7 @@ export function ExpenseLoadError({
     <Shell title={notFound ? 'Expense not found' : 'Expense'}>
       {notFound ? (
         <EmptyState
-          icon={SearchX}
+          icon={SearchLg}
           title="This expense doesn't exist"
           description="It may have been deleted, or the link is wrong."
           actions={
@@ -36,7 +36,7 @@ export function ExpenseLoadError({
       ) : (
         <EmptyState
           tone="error"
-          icon={CircleAlert}
+          icon={AlertCircle}
           title="Couldn't load this expense"
           description={isApiError(error) ? error.message : 'Something went wrong. Try again.'}
           actions={<Button onClick={onRetry}>Try again</Button>}

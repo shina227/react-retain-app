@@ -1,4 +1,4 @@
-import { Pencil, Trash2 } from 'lucide-react';
+import { Edit01, Trash01 } from '@untitledui/icons';
 import { useState, type ReactNode } from 'react';
 import { Link, useParams } from 'react-router';
 import { Button } from '@/components/ui/button';
@@ -40,12 +40,12 @@ export default function ExpenseDetailPanel() {
             className="ml-auto text-error-primary hover:text-error-primary"
             onClick={() => setConfirmingDelete(true)}
           >
-            <Trash2 />
+            <Trash01 />
             Delete
           </Button>
           <Button asChild>
             <Link to={`/expenses/${expense.id}/edit`} state={canGoBack}>
-              <Pencil />
+              <Edit01 />
               Edit
             </Link>
           </Button>

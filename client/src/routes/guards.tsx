@@ -12,6 +12,15 @@ export function ProtectedRoute() {
   return <Outlet />;
 }
 
+// Where each role lands by default: admins get the admin console, users their dashboard.
+const homePath = (isAdmin: boolean) => (isAdmin ? '/admin' : '/dashboard');
+
+// Sends "/" (and unknown paths) to the signed-in user's home.
+export function HomeRedirect() {
+  const { isAdmin } = useAuth();
+  return <Navigate to={homePath(isAdmin)} replace />;
+}
+
 // Admins only; must sit inside ProtectedRoute. The API enforces the same rule with 403s.
 export function AdminRoute() {
   const { isAdmin } = useAuth();
@@ -19,12 +28,14 @@ export function AdminRoute() {
 }
 
 // Login and register pages. Once signed in (including right after logging in),
-// the user goes to the page they originally asked for, or the dashboard.
+// the user goes to the page they originally asked for, or their home.
 export function GuestRoute() {
-  const { user, isLoading } = useAuth();
+  const { user, isAdmin, isLoading } = useAuth();
   const from = (useLocation().state as { from?: Location } | null)?.from;
 
   if (isLoading) return <FullPageLoader />;
-  if (user) return <Navigate to={from ? `${from.pathname}${from.search}` : '/dashboard'} replace />;
+  if (user) {
+    return <Navigate to={from ? `${from.pathname}${from.search}` : homePath(isAdmin)} replace />;
+  }
   return <Outlet />;
 }

@@ -1,6 +1,6 @@
 # Retain design
 
-The UI imitates the [Untitled UI](https://www.untitledui.com/) **v8** Figma kit, built on shadcn/ui components (Radix) restyled with Tailwind CSS v4. The brand colour is **indigo** instead of Untitled's purple. All tokens live in `client/src/index.css`.
+The UI imitates the [Untitled UI](https://www.untitledui.com/) **v8** Figma kit, built on shadcn/ui components (Radix) restyled with Tailwind CSS v4. The brand colour is **indigo** instead of Untitled's purple. All tokens live in `client/src/index.css`. Icons come from Untitled UI's own set (`@untitledui/icons`), not lucide. shadcn's CLI still generates lucide imports, so swap those when adding a component.
 
 ## Tokens use the Figma names
 
@@ -80,9 +80,11 @@ Inter (variable). `text-xs` 12/18, `text-sm` 14/20, `text-base` 16/24, `text-lg`
 ## App shell
 
 - **Desktop (lg+):** no top bar. A 280px sticky sidebar with a 4px inset holds a floating card (`border-secondary`, 12px radius, `shadow-xs`):
-  - header: 24px logomark + wordmark, 20px padding (Untitled's search box is left out; Retain has no global search)
-  - nav items: 36px, 8px padding, 6px radius, 14px semibold `text-secondary`, 20px `fg-quaternary` icon, 2px apart; active = `bg-active` + `text-secondary_hover`
-  - sections split by a `border-secondary` divider; Admin is its own section, admins only
+  - header: 32px logomark, "Retain" with an uppercase caption underneath ("Personal finance", or "Admin console" for admins), 20px padding (Untitled's search box is left out; Retain has no global search)
+  - nav per role. Users: **Workspace** (Overview, Expenses, Budgets, Spending analytics) and **Preferences** (Settings). Admins get their own console instead: **Management** (Overview, Users, All expenses, Categories) and **Account** (Settings)
+  - sections: `border-secondary` divider on top, 12px uppercase semibold `text-quaternary` title
+  - nav items: 40px, 12px padding, 6px radius, 14px semibold `text-secondary`, 20px `fg-quaternary` icon 12px from the label, 2px apart; active = `utility-brand-50` background with `utility-brand-700` text and icon
+  - icons: Overview `Grid01`, Expenses / All expenses `CreditCardDown`, Budgets `CoinsStacked01`, Spending analytics `PieChart03`, Users `Users01`, Categories `Tag01`, Settings `Settings01`
   - footer: account card (40px initials avatar, name, email, ⇅ icon) opening a menu with Dark/Light mode and Log out
 - **Mobile (< lg):** 56px top bar (`border-secondary` bottom border, 16px / 12px padding) with the logo and a 36px menu button that opens the same sidebar as a 280px drawer.
 - **Main:** 32px top, 48px bottom, 32px sides (16px on mobile), max width 1280px.

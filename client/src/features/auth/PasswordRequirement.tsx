@@ -1,4 +1,4 @@
-import { Check } from 'lucide-react';
+import { Check } from '@untitledui/icons';
 import type { ReactNode } from 'react';
 import { cn } from '@/lib/utils';
 

@@ -5,7 +5,9 @@ import { EditExpensePanel, NewExpensePanel } from '@/features/expenses/ExpenseFo
 import { AppLayout } from '@/layouts/AppLayout';
 import { AuthLayout } from '@/layouts/AuthLayout';
 import AdminCategoriesPage from '@/pages/AdminCategoriesPage';
+import AdminExpensesPage from '@/pages/AdminExpensesPage';
 import AdminOverviewPage from '@/pages/AdminOverviewPage';
+import AdminUsersPage from '@/pages/AdminUsersPage';
 import BudgetsPage from '@/pages/BudgetsPage';
 import DashboardPage from '@/pages/DashboardPage';
 import ExpensesPage from '@/pages/ExpensesPage';
@@ -13,7 +15,7 @@ import LoginPage from '@/pages/LoginPage';
 import RegisterPage from '@/pages/RegisterPage';
 import ReportsPage from '@/pages/ReportsPage';
 import SettingsPage from '@/pages/SettingsPage';
-import { AdminRoute, GuestRoute, ProtectedRoute } from './guards';
+import { AdminRoute, GuestRoute, HomeRedirect, ProtectedRoute } from './guards';
 
 const devRoutes: RouteObject[] = import.meta.env.DEV
   ? [{ path: '/dev/ui', element: <StyleGuide /> }]
@@ -38,7 +40,7 @@ export const router = createBrowserRouter([
       {
         element: <AppLayout />,
         children: [
-          { path: '/', element: <Navigate to="/dashboard" replace /> },
+          { path: '/', element: <HomeRedirect /> },
           { path: '/dashboard', element: <DashboardPage /> },
           {
             // Detail (slideout) and add/edit (modal) open over the list, so they nest under it.
@@ -57,6 +59,8 @@ export const router = createBrowserRouter([
             element: <AdminRoute />,
             children: [
               { path: '/admin', element: <AdminOverviewPage /> },
+              { path: '/admin/users', element: <AdminUsersPage /> },
+              { path: '/admin/expenses', element: <AdminExpensesPage /> },
               { path: '/admin/categories', element: <AdminCategoriesPage /> },
             ],
           },
@@ -66,5 +70,5 @@ export const router = createBrowserRouter([
   },
   ...devRoutes,
   // Until the 404 page exists (Fri Oct 16).
-  { path: '*', element: <Navigate to="/dashboard" replace /> },
+  { path: '*', element: <Navigate to="/" replace /> },
 ]);

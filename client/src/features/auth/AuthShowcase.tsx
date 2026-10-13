@@ -1,4 +1,4 @@
-import { TriangleAlert } from 'lucide-react';
+import { AlertTriangle } from '@untitledui/icons';
 import { formatMoney } from '@/lib/format';
 import { cn } from '@/lib/utils';
 
@@ -35,7 +35,9 @@ export function AuthShowcase({ className }: { className?: string }) {
       <span className="absolute -bottom-48 -left-32 size-96 rounded-full bg-brand-800/60 blur-3xl" />
 
       <div className="relative flex max-w-md flex-col gap-4">
-        <h2 className="text-display-md font-semibold text-balance text-white">Every franc, accounted for.</h2>
+        <h2 className="text-display-md font-semibold text-balance text-white">
+          Every franc, accounted for.
+        </h2>
         <p className="text-lg text-brand-100">
           Log expenses in seconds, set monthly budgets and see where your money really goes.
         </p>
@@ -96,7 +98,7 @@ export function AuthShowcase({ className }: { className?: string }) {
 
         <div className="absolute -bottom-6 -left-8 flex items-center gap-3 rounded-xl bg-primary py-3 pr-4 pl-3 shadow-lg ring-1 ring-black/5">
           <span className="grid size-8 place-items-center rounded-full bg-utility-warning-50 text-utility-warning-700">
-            <TriangleAlert className="size-4" />
+            <AlertTriangle className="size-4" />
           </span>
           <div className="flex flex-col">
             <span className="text-sm font-semibold text-primary">Transport at 92%</span>

@@ -1,4 +1,4 @@
-import type { LucideIcon } from 'lucide-react';
+import type { IconComponent } from '@/types/icon';
 import { cn } from '@/lib/utils';
 
 // Untitled featured icon: a bordered "modern" box by default (empty states), or a soft red
@@ -8,7 +8,7 @@ export function FeaturedIcon({
   tone = 'default',
   className,
 }: {
-  icon: LucideIcon;
+  icon: IconComponent;
   tone?: 'default' | 'error';
   className?: string;
 }) {

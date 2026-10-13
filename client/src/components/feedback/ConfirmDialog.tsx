@@ -1,4 +1,4 @@
-import { XIcon } from 'lucide-react';
+import { XClose } from '@untitledui/icons';
 import type { ReactNode } from 'react';
 import { AlertDialog } from 'radix-ui';
 import { SubmitButton } from '@/components/form/SubmitButton';
@@ -57,7 +57,7 @@ export function ConfirmDialog({
             onClick={() => onOpenChange(false)}
             className="absolute top-4 right-4"
           >
-            <XIcon />
+            <XClose />
           </Button>
         </AlertDialog.Content>
       </AlertDialog.Portal>

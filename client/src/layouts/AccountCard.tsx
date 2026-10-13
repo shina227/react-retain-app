@@ -1,4 +1,4 @@
-import { ChevronsUpDown, LogOut, Moon, Sun } from 'lucide-react';
+import { ChevronSelectorVertical, LogOut01, Moon01, Sun } from '@untitledui/icons';
 import { useTheme } from 'next-themes';
 import { startTransition } from 'react';
 import { useNavigate } from 'react-router';
@@ -28,7 +28,7 @@ export function AccountCard() {
   if (!user) return null;
 
   const isDark = resolvedTheme === 'dark';
-  const ThemeIcon = isDark ? Sun : Moon;
+  const ThemeIcon = isDark ? Sun : Moon01;
 
   // One transition, so ProtectedRoute never renders signed-out on this page and
   // remembers it as the next login's destination.
@@ -52,7 +52,7 @@ export function AccountCard() {
             </span>
             <span className="truncate text-tertiary">{user.email}</span>
           </span>
-          <ChevronsUpDown
+          <ChevronSelectorVertical
             aria-hidden
             className="absolute top-3 right-3 size-4 text-fg-quaternary"
           />
@@ -64,7 +64,7 @@ export function AccountCard() {
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onSelect={handleLogout}>
-          <LogOut aria-hidden /> Log out
+          <LogOut01 aria-hidden /> Log out
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

@@ -1,4 +1,4 @@
-import { Loader2 } from 'lucide-react';
+import { Loading02 } from '@untitledui/icons';
 import type { ComponentProps } from 'react';
 import { Button } from '@/components/ui/button';
 
@@ -10,7 +10,7 @@ export function SubmitButton({
 }: ComponentProps<typeof Button> & { pending: boolean }) {
   return (
     <Button type="submit" disabled={pending} aria-busy={pending} {...props}>
-      {pending && <Loader2 aria-hidden className="animate-spin" />}
+      {pending && <Loading02 aria-hidden className="animate-spin" />}
       {children}
     </Button>
   );
