@@ -1,9 +1,9 @@
 import { api } from '@/lib/api';
 import type { Category, Expense, ExpenseInput, ExpenseList, ExpenseQuery } from '@/types/api';
 
-// Any change to an expense also changes the dashboard totals and the admin insights.
+// Any change to an expense also changes the dashboard totals, budget history and admin insights.
 const LIST = { type: 'Expense', id: 'LIST' } as const;
-const derived = ['Dashboard', 'Admin'] as const;
+const derived = ['Dashboard', { type: 'Budget', id: 'LIST' }, 'Admin'] as const;
 
 export const expensesApi = api.injectEndpoints({
   endpoints: (build) => ({

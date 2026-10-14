@@ -98,6 +98,15 @@ export interface Budget {
 
 export type BudgetStatus = 'within' | 'approaching' | 'over' | 'none';
 
+// One row of the budget history: only months with a budget, so never 'none'.
+export interface BudgetMonth {
+  month: string;
+  amount: number;
+  spent: number;
+  remaining: number; // negative when over budget
+  status: Exclude<BudgetStatus, 'none'>;
+}
+
 export interface DashboardSummary {
   month: string;
   totalSpent: number;

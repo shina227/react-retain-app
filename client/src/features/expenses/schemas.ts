@@ -9,27 +9,27 @@ const paymentMethodSchema = z.enum(
   'Choose a payment method',
 );
 
+// Typed as text so "12,550" works; RWF has no decimals, so only whole francs are allowed.
+// Shared with the budget form, which has the same server rules.
+export const amountSchema = z
+  .string()
+  .transform((value) => value.replace(/[\s,]/g, ''))
+  .pipe(
+    z
+      .string()
+      .min(1, { message: 'Enter an amount', abort: true })
+      .regex(/^\d+$/, 'Enter a whole number of francs')
+      .transform(toMinor)
+      .pipe(
+        z.number().positive('Amount must be greater than 0').max(MAX_AMOUNT, 'Amount is too large'),
+      ),
+  );
+
 // Same rules as the server's validators/expense.ts. The form holds strings; parsing turns
 // them into the API body, so the submit handler receives an ExpenseInput directly.
 export const expenseFormSchema = z.object({
   title: z.string().trim().min(1, 'Enter a title').max(100, 'Keep the title under 100 characters'),
-  // Typed as text so "12,550" works; RWF has no decimals, so only whole francs are allowed.
-  amount: z
-    .string()
-    .transform((value) => value.replace(/[\s,]/g, ''))
-    .pipe(
-      z
-        .string()
-        .min(1, { message: 'Enter an amount', abort: true })
-        .regex(/^\d+$/, 'Enter a whole number of francs')
-        .transform(toMinor)
-        .pipe(
-          z
-            .number()
-            .positive('Amount must be greater than 0')
-            .max(MAX_AMOUNT, 'Amount is too large'),
-        ),
-    ),
+  amount: amountSchema,
   categoryId: z.string().min(1, 'Choose a category'),
   date: z.iso.date('Choose a date'),
   paymentMethod: paymentMethodSchema,

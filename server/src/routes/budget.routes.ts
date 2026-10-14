@@ -8,6 +8,7 @@ export const budgetRouter = Router();
 
 budgetRouter.use(requireAuth);
 
+budgetRouter.get('/', budgetController.list);
 budgetRouter.get('/:month', validate({ params: monthParamsSchema }), budgetController.get);
 budgetRouter.put(
   '/:month',

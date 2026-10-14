@@ -190,8 +190,17 @@ Errors: `400 DEFAULT_CATEGORY` (the default can't be deleted) · `404` (unknown 
 ### Budgets
 | | Method | Path | Auth | Description |
 |---|---|---|---|---|
+| ✅ | GET | `/budgets` | user | Own budget history with spent, remaining and status |
 | ✅ | GET | `/budgets/:month` | user | Own budget for a month |
 | ✅ | PUT | `/budgets/:month` | user | Set or update own budget for a month |
+
+**`GET /budgets`**: `200`. Every month with a budget set, newest first. `remaining` is negative when over budget; `status` follows the same thresholds as the dashboard.
+
+```json
+[
+  { "month": "2026-10", "amount": 250000, "spent": 212000, "remaining": 38000, "status": "approaching" }
+]
+```
 
 `:month` is `YYYY-MM` with a real month (`01`–`12`), otherwise `400`.
 
