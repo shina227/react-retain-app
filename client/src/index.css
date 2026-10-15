@@ -188,11 +188,12 @@
   --text-color-fg-quaternary: var(--color-gray-600);
   --text-color-fg-quaternary_hover: var(--color-gray-500);
 
-  --background-color-primary: var(--color-gray-950);
-  --background-color-primary_alt: var(--color-gray-900);
+  /* Surfaces sit a step above the gray scale's near-black 950, so the page isn't pure black. */
+  --background-color-primary: #141414;
+  --background-color-primary_alt: #1c1c1c;
   --background-color-primary_hover: var(--color-gray-800);
-  --background-color-secondary: var(--color-gray-900);
-  --background-color-secondary_alt: var(--color-gray-950);
+  --background-color-secondary: #1c1c1c;
+  --background-color-secondary_alt: #141414;
   --background-color-tertiary: var(--color-gray-800);
   --background-color-quaternary: var(--color-gray-700);
   --background-color-active: var(--color-gray-800);
@@ -206,7 +207,7 @@
   --border-color-brand: var(--color-brand-400);
   --border-color-error_subtle: var(--color-error-400);
 
-  --color-utility-gray-50: var(--color-gray-900);
+  --color-utility-gray-50: #1c1c1c;
   --color-utility-gray-200: var(--color-gray-700);
   --color-utility-gray-700: var(--color-gray-300);
   --color-utility-brand-50: var(--color-brand-950);

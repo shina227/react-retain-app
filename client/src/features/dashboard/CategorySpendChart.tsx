@@ -6,34 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { formatMoney } from '@/lib/format';
 import type { DashboardSummary } from '@/types/api';
-
-// Beyond this many categories the smallest fold into "Other", so the slices stay readable.
-const MAX_SLICES = 6;
-const OTHER_COLOR = 'var(--color-gray-400)';
-
-interface Slice {
-  name: string;
-  total: number;
-  share: number;
-  fill: string;
-}
-
-function toSlices(byCategory: DashboardSummary['byCategory'], totalSpent: number): Slice[] {
-  const slice = (name: string, total: number, fill: string) => ({
-    name,
-    total,
-    fill,
-    share: Math.round((total / totalSpent) * 100),
-  });
-  // The API sorts by total, largest first.
-  const slices = byCategory.map(({ category, total }) =>
-    slice(category.name, total, category.color),
-  );
-  if (slices.length <= MAX_SLICES) return slices;
-
-  const rest = slices.slice(MAX_SLICES - 1).reduce((sum, s) => sum + s.total, 0);
-  return [...slices.slice(0, MAX_SLICES - 1), slice('Other', rest, OTHER_COLOR)];
-}
+import { toSlices, type Slice } from './slices';
 
 // Where the month's money went: a donut with the total in the middle, and a legend that lists
 // every category's amount, so nothing depends on colour alone. Shares are in the tooltip.
@@ -50,14 +23,7 @@ export function CategorySpendChart({ summary }: { summary?: DashboardSummary }) 
       </header>
 
       {!summary ? (
-        <div aria-busy aria-label="Loading chart" className="flex items-center gap-8 p-4 md:p-6">
-          <Skeleton className="size-44 shrink-0 rounded-full" />
-          <div className="flex flex-1 flex-col gap-3">
-            {Array.from({ length: 4 }, (_, i) => (
-              <Skeleton key={i} className="h-5 w-full" />
-            ))}
-          </div>
-        </div>
+        <DonutSkeleton />
       ) : summary.totalSpent === 0 ? (
         <EmptyState
           icon={PieChart03}
@@ -74,7 +40,10 @@ export function CategorySpendChart({ summary }: { summary?: DashboardSummary }) 
         />
       ) : (
         <Donut
-          slices={toSlices(summary.byCategory, summary.totalSpent)}
+          slices={toSlices(
+            summary.byCategory.map(({ category, total }) => ({ ...category, total })),
+            summary.totalSpent,
+          )}
           total={summary.totalSpent}
         />
       )}
@@ -82,7 +51,20 @@ export function CategorySpendChart({ summary }: { summary?: DashboardSummary }) 
   );
 }
 
-function Donut({ slices, total }: { slices: Slice[]; total: number }) {
+export function DonutSkeleton({ rows = 4 }: { rows?: number }) {
+  return (
+    <div aria-busy aria-label="Loading chart" className="flex items-center gap-8 p-4 md:p-6">
+      <Skeleton className="size-40 shrink-0 rounded-full" />
+      <div className="flex flex-1 flex-col gap-3">
+        {Array.from({ length: rows }, (_, i) => (
+          <Skeleton key={i} className="h-5 w-full" />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export function Donut({ slices, total }: { slices: Slice[]; total: number }) {
   return (
     <div className="flex flex-col items-center gap-6 p-4 @sm:flex-row md:p-6">
       {/* The legend carries the names and amounts for screen readers. */}

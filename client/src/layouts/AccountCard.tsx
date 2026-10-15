@@ -11,14 +11,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useAuth } from '@/features/auth/AuthContext';
-
-const initials = (name: string) =>
-  name
-    .split(/\s+/)
-    .map((part) => part[0])
-    .slice(0, 2)
-    .join('')
-    .toUpperCase();
+import { initials } from '@/lib/utils';
 
 // Untitled "nav account card" at the bottom of the sidebar; opens the theme and log out menu.
 export function AccountCard() {
