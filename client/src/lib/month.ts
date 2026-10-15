@@ -20,6 +20,12 @@ export const daysLeftInMonth = () => {
   return lastDay - today.getDate() + 1;
 };
 
+// "2026-02" → { startDate: "2026-02-01", endDate: "2026-02-28" }, for the expense date filters.
+export const monthDateRange = (month: string) => {
+  const lastDay = new Date(Number(month.slice(0, 4)), Number(month.slice(5)), 0).getDate();
+  return { startDate: `${month}-01`, endDate: `${month}-${lastDay}` };
+};
+
 // "2026-01", -1 → "2025-12"
 export const shiftMonth = (month: string, by: number) => {
   const date = toDate(month);

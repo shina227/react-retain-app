@@ -1,4 +1,5 @@
 import { todayISO } from '@/lib/format';
+import { monthDateRange } from '@/lib/month';
 
 export type DatePreset = 'month' | '30d' | 'all';
 type DateRange = { startDate: string; endDate: string };
@@ -21,9 +22,7 @@ export function presetRange(preset: DatePreset, today = todayISO()): DateRange {
   if (preset === 'all') return { startDate: '', endDate: '' };
   if (preset === '30d') return { startDate: shiftDays(today, -29), endDate: today };
 
-  const [year, month] = today.split('-').map(Number) as [number, number];
-  const lastDay = new Date(Date.UTC(year, month, 0)).toISOString().slice(0, 10);
-  return { startDate: `${today.slice(0, 7)}-01`, endDate: lastDay };
+  return monthDateRange(today.slice(0, 7));
 }
 
 // Which preset the current range matches, or 'custom' for anything else.
