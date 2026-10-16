@@ -5,6 +5,7 @@ import {
   type FetchArgs,
   type FetchBaseQueryError,
 } from '@reduxjs/toolkit/query/react';
+import { toast } from 'sonner';
 import type { ApiError } from '@/types/api';
 
 const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:4000/api';
@@ -49,14 +50,41 @@ function toApiError(error: FetchBaseQueryError): ApiError {
   };
 }
 
-// Attaches the token, normalises errors to ApiError, and reports expired sessions.
+// The free API host sleeps when idle, and the first request after that takes 30–60s.
+// Once any request has run this long, a toast explains the wait until the slow ones finish.
+const SLOW_REQUEST_MS = 3000;
+const WAKING_TOAST_ID = 'waking-server';
+let slowRequests = 0;
+
+async function withWakingNotice<T>(request: T | PromiseLike<T>): Promise<T> {
+  let slow = false;
+  const timer = setTimeout(() => {
+    slow = true;
+    if (slowRequests++ === 0) {
+      toast.loading('Waking up the server…', {
+        id: WAKING_TOAST_ID,
+        description: 'It sleeps when idle, so this can take up to a minute.',
+      });
+    }
+  }, SLOW_REQUEST_MS);
+
+  try {
+    return await request;
+  } finally {
+    clearTimeout(timer);
+    if (slow && --slowRequests === 0) toast.dismiss(WAKING_TOAST_ID);
+  }
+}
+
+// Attaches the token, normalises errors to ApiError, reports expired sessions, and explains
+// slow responses.
 export const baseQuery: BaseQueryFn<string | FetchArgs, unknown, ApiError> = async (
   args,
   api,
   extraOptions,
 ) => {
   const hadToken = tokenStorage.get() !== null;
-  const result = await rawBaseQuery(args, api, extraOptions);
+  const result = await withWakingNotice(rawBaseQuery(args, api, extraOptions));
   if (!result.error) return { data: result.data, meta: result.meta };
 
   // A 401 on a request that sent a token means the session is over (not just a wrong password).

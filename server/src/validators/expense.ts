@@ -1,12 +1,6 @@
 import { z } from 'zod';
 import { PaymentMethod } from '../generated/prisma/client.js';
-import { money } from './common.js';
-
-const MAX_LIMIT = 50;
-
-// Treats empty query params (`?search=`) as not set.
-const optional = <T extends z.ZodType>(schema: T) =>
-  z.preprocess((value) => (value === '' ? undefined : value), schema.optional());
+import { money, optional, pagination, search } from './common.js';
 
 const date = z.iso.date('Date must be YYYY-MM-DD');
 
@@ -22,7 +16,7 @@ export const expenseBodySchema = z.object({
 
 export const expenseListQuerySchema = z
   .object({
-    search: optional(z.string().trim().max(100)),
+    search,
     categoryId: optional(z.string()),
     paymentMethod: optional(z.enum(PaymentMethod)),
     startDate: optional(date),
@@ -31,13 +25,7 @@ export const expenseListQuerySchema = z
     maxAmount: optional(z.coerce.number().int().nonnegative()),
     sortBy: z.enum(['date', 'amount']).default('date'),
     sortOrder: z.enum(['asc', 'desc']).default('desc'),
-    page: z.coerce.number().int().positive().default(1),
-    limit: z.coerce
-      .number()
-      .int()
-      .positive()
-      .default(10)
-      .transform((n) => Math.min(n, MAX_LIMIT)),
+    ...pagination,
   })
   .refine((q) => !q.startDate || !q.endDate || q.startDate <= q.endDate, {
     path: ['endDate'],

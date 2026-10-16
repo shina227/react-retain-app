@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react';
-import type { LoginInput, RegisterInput, User } from '@/types/api';
+import type { LoginInput, ProfileInput, RegisterInput, User } from '@/types/api';
 
 export interface AuthContextValue {
   user: User | null;
@@ -7,6 +7,7 @@ export interface AuthContextValue {
   isLoading: boolean; // true while restoring a saved session on page load
   login: (input: LoginInput) => Promise<void>;
   register: (input: RegisterInput) => Promise<void>;
+  updateProfile: (input: ProfileInput) => Promise<void>;
   logout: () => void;
 }
 

@@ -6,6 +6,7 @@ import { categoryRouter } from './category.routes.js';
 import { dashboardRouter } from './dashboard.routes.js';
 import { expenseRouter } from './expense.routes.js';
 import { healthRouter } from './health.routes.js';
+import { reportRouter } from './report.routes.js';
 
 // All API routes, mounted at /api.
 export const apiRouter = Router();
@@ -16,4 +17,5 @@ apiRouter.use('/expenses', expenseRouter);
 apiRouter.use('/categories', categoryRouter);
 apiRouter.use('/budgets', budgetRouter);
 apiRouter.use('/dashboard', dashboardRouter);
+apiRouter.use('/reports', reportRouter);
 apiRouter.use('/admin', adminRouter);

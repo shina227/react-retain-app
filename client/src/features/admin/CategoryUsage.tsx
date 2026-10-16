@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { CategoryAvatar } from '@/features/expenses/CategoryMarks';
 import type { AdminInsights } from '@/types/api';
-import { AdminPanel } from './AdminPanel';
+import { Panel } from '@/components/Panel';
 
 const views = {
   most: { label: 'Most used', description: 'Top 5 categories by number of expenses' },
@@ -21,7 +21,7 @@ export function CategoryUsage({ insights }: { insights?: AdminInsights }) {
   const max = Math.max(...(insights?.top5.map((c) => c.count) ?? []), 1);
 
   return (
-    <AdminPanel
+    <Panel
       title="Category usage"
       description={views[view].description}
       actions={
@@ -79,6 +79,6 @@ export function CategoryUsage({ insights }: { insights?: AdminInsights }) {
           ))}
         </ol>
       )}
-    </AdminPanel>
+    </Panel>
   );
 }

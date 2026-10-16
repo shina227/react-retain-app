@@ -57,6 +57,7 @@ Shapes are filled in as each endpoint is built. ✅ = implemented.
 | ✅ | POST | `/auth/register` | public | Create an account (always role `USER`) |
 | ✅ | POST | `/auth/login` | public | Exchange credentials for a JWT |
 | ✅ | GET | `/auth/me` | user | Current user |
+| ✅ | PATCH | `/auth/me` | user | Update own name and email |
 
 **`POST /auth/register`**: `201`
 
@@ -87,6 +88,14 @@ Errors: `400 VALIDATION_ERROR` · `401 INVALID_CREDENTIALS` (same message, "Inva
 ```
 
 Errors: `401 UNAUTHORIZED` (no `Bearer` header) · `401 INVALID_TOKEN` (bad signature, malformed or expired)
+
+**`PATCH /auth/me`**: `200`, same response shape as `GET /auth/me`. Both fields are required; email is trimmed and lowercased. Any other field (`role`, `password`) is ignored.
+
+```json
+{ "name": "Ama Mensah", "email": "ama.m@example.com" }
+```
+
+Errors: `400 VALIDATION_ERROR` · `401` (as above) · `409 EMAIL_TAKEN` (another account uses that email)
 
 **Token:** HS256 JWT with payload `{ sub: userId, role, iat, exp }`, valid for 7 days. Admin routes return `403 FORBIDDEN` for a valid non-admin token.
 
@@ -222,7 +231,19 @@ Errors: `400 DEFAULT_CATEGORY` (the default can't be deleted) · `404` (unknown 
 | | Method | Path | Auth | Description |
 |---|---|---|---|---|
 | ✅ | GET | `/dashboard?month=YYYY-MM` | user | Monthly summary: spent, budget, status, highest, by category, recent |
+| ✅ | GET | `/reports/trend?months=6&month=YYYY-MM` | user | Total spent per month over the last N months |
 | ✅ | GET | `/admin/insights` | admin | Platform-wide insights |
+| ✅ | GET | `/admin/users` | admin | Every account, paginated and searchable |
+| ✅ | GET | `/admin/expenses` | admin | Every user's expenses, paginated and searchable |
+
+**`GET /reports/trend?months=6&month=YYYY-MM`**: `200`. The `months` months ending at `month` (inclusive), oldest first. `months` is 1–12 (default 6); `month` defaults to the current month. Months with no expenses have `total: 0`.
+
+```json
+[
+  { "month": "2026-05", "total": 184000 },
+  { "month": "2026-06", "total": 0 }
+]
+```
 
 **`GET /dashboard?month=YYYY-MM`**: `200`. `month` defaults to the current month (UTC). The month runs from the 1st (inclusive) to the 1st of the next month (exclusive).
 
@@ -273,3 +294,23 @@ Errors: `400 DEFAULT_CATEGORY` (the default can't be deleted) · `404` (unknown 
 | `top5` / `bottom5` | most / least used by expense count; `bottom5` includes zero-use categories, least used first; ties sorted by name |
 | `recentExpenses` | 10 most recently added, across all users |
 | `recentUsers` | 5 newest users; no password hashes |
+
+**`GET /admin/users?search=&page=1&limit=10`**: `200`, paginated. Every account (admins included), newest first. `search` matches name or email, case-insensitive.
+
+```json
+{
+  "data": [
+    { "id": "cm...", "name": "Ama Mensah", "email": "demo@example.com", "role": "USER", "createdAt": "...", "expenseCount": 45, "totalSpent": 1320000 }
+  ],
+  "page": 1, "limit": 10, "total": 6, "totalPages": 1
+}
+```
+
+**`GET /admin/expenses?search=&categoryId=&page=1&limit=10`**: `200`, paginated. Expenses from every user, newest date first. `search` matches the title, notes, or the owner's name or email; `categoryId` narrows to one category.
+
+```json
+{
+  "data": [{ "...": "expense object", "user": { "id": "cm...", "name": "Ama Mensah", "email": "demo@example.com" } }],
+  "page": 1, "limit": 10, "total": 150, "totalPages": 15
+}
+```

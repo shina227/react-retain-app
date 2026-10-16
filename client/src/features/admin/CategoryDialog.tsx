@@ -18,7 +18,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { isApiError } from '@/lib/api';
 import { applyServerErrors } from '@/lib/forms';
 import { cn } from '@/lib/utils';
 import type { AdminCategory } from '@/types/api';
@@ -108,12 +107,7 @@ function CategoryForm({
       });
       onDone();
     } catch (error) {
-      // A duplicate name comes back as a form-level 409; it belongs on the name field.
-      if (isApiError(error) && error.code === 'CATEGORY_EXISTS') {
-        setError('name', { type: 'server', message: error.message });
-      } else {
-        setFormError(applyServerErrors(error, setError));
-      }
+      setFormError(applyServerErrors(error, setError));
     }
   });
 
@@ -154,7 +148,7 @@ function CategoryForm({
 }
 
 const swatch =
-  'relative grid size-8 place-items-center rounded-full text-white outline-none transition focus-visible:ring-4 focus-visible:ring-brand-500/24 aria-checked:ring-2 aria-checked:ring-(--border-color-brand) aria-checked:ring-offset-2 aria-checked:ring-offset-(--background-color-primary)';
+  'relative grid size-8 place-items-center rounded-full text-white outline-none transition hover:scale-110 focus-visible:ring-4 focus-visible:ring-brand-500/24 aria-checked:ring-2 aria-checked:ring-(--border-color-brand) aria-checked:ring-offset-2 aria-checked:ring-offset-(--background-color-primary)';
 
 // Preset swatches plus a custom one that opens the browser's colour picker.
 function ColorPicker({ value, onChange }: { value: string; onChange: (color: string) => void }) {

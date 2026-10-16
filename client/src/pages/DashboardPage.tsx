@@ -22,6 +22,7 @@ export default function DashboardPage() {
     <>
       <PageHeader
         title={`Welcome back, ${firstName}`}
+        tabTitle="Dashboard"
         description="Here's how your month is going."
         actions={<MonthSelector month={month} onChange={setMonth} />}
       />

@@ -25,6 +25,8 @@ export interface RegisterInput extends LoginInput {
   name: string;
 }
 
+export type ProfileInput = Pick<User, 'name' | 'email'>;
+
 export type PaymentMethod = 'CASH' | 'CARD' | 'MOBILE_MONEY' | 'BANK_TRANSFER';
 
 export interface CategorySummary {
@@ -119,6 +121,12 @@ export interface DashboardSummary {
   recent: Expense[];
 }
 
+// One month of GET /reports/trend.
+export interface TrendPoint {
+  month: string;
+  total: number;
+}
+
 export interface CategoryUsage extends CategorySummary {
   count: number;
   total: number;
@@ -134,6 +142,25 @@ export interface AdminInsights {
   bottom5: CategoryUsage[];
   recentExpenses: (Expense & { user: { id: string; name: string } })[];
   recentUsers: Omit<User, 'role'>[];
+}
+
+// GET /admin/users rows.
+export interface AdminUser extends User {
+  expenseCount: number;
+  totalSpent: number;
+}
+
+// GET /admin/expenses rows: an expense plus who it belongs to.
+export interface AdminExpense extends Expense {
+  user: { id: string; name: string; email: string };
+}
+
+// Query for the admin lists. `categoryId` only applies to expenses.
+export interface AdminListQuery {
+  search: string;
+  categoryId?: string;
+  page: number;
+  limit: number;
 }
 
 // Every failed request is normalised to this shape by lib/api.ts.

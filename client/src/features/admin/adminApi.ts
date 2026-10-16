@@ -1,5 +1,13 @@
 import { api } from '@/lib/api';
-import type { AdminCategory, AdminInsights, Category } from '@/types/api';
+import type {
+  AdminCategory,
+  AdminExpense,
+  AdminInsights,
+  AdminListQuery,
+  AdminUser,
+  Category,
+  Paginated,
+} from '@/types/api';
 
 export type CategoryInput = { name: string; color: string };
 
@@ -11,6 +19,14 @@ export const adminApi = api.injectEndpoints({
     // Expense mutations also invalidate 'Admin', so the insights stay current.
     getInsights: build.query<AdminInsights, void>({
       query: () => '/admin/insights',
+      providesTags: ['Admin'],
+    }),
+    getAdminUsers: build.query<Paginated<AdminUser>, AdminListQuery>({
+      query: (params) => ({ url: '/admin/users', params }),
+      providesTags: ['Admin'],
+    }),
+    getAdminExpenses: build.query<Paginated<AdminExpense>, AdminListQuery>({
+      query: (params) => ({ url: '/admin/expenses', params }),
       providesTags: ['Admin'],
     }),
     getAdminCategories: build.query<AdminCategory[], void>({
@@ -34,6 +50,8 @@ export const adminApi = api.injectEndpoints({
 
 export const {
   useGetInsightsQuery,
+  useGetAdminUsersQuery,
+  useGetAdminExpensesQuery,
   useGetAdminCategoriesQuery,
   useCreateCategoryMutation,
   useUpdateCategoryMutation,

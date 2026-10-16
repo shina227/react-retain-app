@@ -39,7 +39,11 @@ export default function RegisterPage() {
 
   return (
     <>
-      <AuthHeader title="Create an account" description="Start tracking where your money goes." />
+      <AuthHeader
+        title="Create an account"
+        tabTitle="Sign up"
+        description="Start tracking where your money goes."
+      />
       <form onSubmit={onSubmit} noValidate className="flex flex-col gap-6">
         <div className="flex flex-col gap-5">
           {formError && <FormAlert>{formError}</FormAlert>}

@@ -62,8 +62,9 @@ export default function ExpensesPage() {
           <h2 id="all-expenses" className="text-lg font-semibold text-primary">
             All expenses
           </h2>
+          {/* Announced when filters change the count. */}
           {data && (
-            <Badge variant="outline">
+            <Badge variant="outline" aria-live="polite" aria-atomic>
               {data.total} {data.total === 1 ? 'expense' : 'expenses'}
             </Badge>
           )}
@@ -78,7 +79,7 @@ export default function ExpensesPage() {
             tone="error"
             icon={AlertCircle}
             title="Couldn't load your expenses"
-            description={'message' in error ? error.message : 'Something went wrong. Try again.'}
+            description={error.message}
             actions={<Button onClick={refetch}>Try again</Button>}
           />
         ) : !data?.total && activeFilterCount > 0 ? (

@@ -67,31 +67,7 @@ export function DonutSkeleton({ rows = 4 }: { rows?: number }) {
 export function Donut({ slices, total }: { slices: Slice[]; total: number }) {
   return (
     <div className="flex flex-col items-center gap-6 p-4 @sm:flex-row md:p-6">
-      {/* The legend carries the names and amounts for screen readers. */}
-      <div aria-hidden className="relative size-40 shrink-0">
-        <PieChart width={160} height={160}>
-          <Pie
-            data={slices}
-            dataKey="total"
-            nameKey="name"
-            innerRadius={54}
-            outerRadius={80}
-            paddingAngle={slices.length > 1 ? 2 : 0}
-            cornerRadius={4}
-            stroke="none"
-            startAngle={90}
-            endAngle={-270}
-            isAnimationActive={false}
-          />
-          <Tooltip content={SliceTooltip} />
-        </PieChart>
-        <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-xs text-tertiary">Total</span>
-          <span className="text-sm font-semibold text-primary tabular-nums">
-            {formatMoney(total)}
-          </span>
-        </div>
-      </div>
+      <DonutRing slices={slices} total={total} />
 
       <ul className="flex w-full flex-col gap-2.5">
         {slices.map((slice) => (
@@ -108,6 +84,37 @@ export function Donut({ slices, total }: { slices: Slice[]; total: number }) {
           </li>
         ))}
       </ul>
+    </div>
+  );
+}
+
+// Just the ring, with the total in the middle. Hidden from screen readers, so whatever sits
+// beside it (a legend or a table) must carry the names and amounts.
+export function DonutRing({ slices, total }: { slices: Slice[]; total: number }) {
+  return (
+    <div aria-hidden className="relative size-40 shrink-0">
+      <PieChart width={160} height={160}>
+        <Pie
+          data={slices}
+          dataKey="total"
+          nameKey="name"
+          innerRadius={54}
+          outerRadius={80}
+          paddingAngle={slices.length > 1 ? 2 : 0}
+          cornerRadius={4}
+          stroke="none"
+          startAngle={90}
+          endAngle={-270}
+          isAnimationActive={false}
+        />
+        <Tooltip content={SliceTooltip} />
+      </PieChart>
+      <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
+        <span className="text-xs text-tertiary">Total</span>
+        <span className="text-sm font-semibold text-primary tabular-nums">
+          {formatMoney(total)}
+        </span>
+      </div>
     </div>
   );
 }

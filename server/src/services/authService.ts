@@ -5,7 +5,7 @@ import { Role, type User } from '../generated/prisma/client.js';
 import { AppError } from '../lib/AppError.js';
 import { prisma } from '../lib/prisma.js';
 import type { AuthUser } from '../types/express.js';
-import type { LoginInput, RegisterInput } from '../validators/auth.js';
+import type { LoginInput, ProfileInput, RegisterInput } from '../validators/auth.js';
 
 const BCRYPT_COST = 12;
 const INVALID_CREDENTIALS = 'Invalid email or password';
@@ -53,6 +53,17 @@ export async function login({ email, password }: LoginInput) {
 export async function getMe(userId: string) {
   const user = await prisma.user.findUnique({ where: { id: userId } });
   if (!user) throw AppError.unauthorized('Account no longer exists');
+  return toPublicUser(user);
+}
+
+// Updates only name and email; role and password never change here.
+export async function updateMe(userId: string, { name, email }: ProfileInput) {
+  const owner = await prisma.user.findUnique({ where: { email }, select: { id: true } });
+  if (owner && owner.id !== userId) {
+    throw AppError.conflict('An account with that email already exists', 'EMAIL_TAKEN');
+  }
+
+  const user = await prisma.user.update({ where: { id: userId }, data: { name, email } });
   return toPublicUser(user);
 }
 

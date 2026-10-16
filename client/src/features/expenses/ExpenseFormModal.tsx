@@ -8,14 +8,7 @@ import { FormAlert } from '@/components/form/FormAlert';
 import { SubmitButton } from '@/components/form/SubmitButton';
 import { TextField } from '@/components/form/TextField';
 import { Button } from '@/components/ui/button';
-import {
-  Field,
-  FieldDescription,
-  FieldError,
-  FieldLabel,
-  FieldLegend,
-  FieldSet,
-} from '@/components/ui/field';
+import { Field, FieldDescription, FieldError, FieldLabel } from '@/components/ui/field';
 import {
   Select,
   SelectContent,
@@ -27,9 +20,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Textarea } from '@/components/ui/textarea';
 import { formatMoney, fromMinor, todayISO } from '@/lib/format';
 import { applyServerErrors, openDatePicker } from '@/lib/forms';
-import type { Expense, ExpenseInput, PaymentMethod } from '@/types/api';
+import type { Expense, ExpenseInput } from '@/types/api';
 import type { IconComponent } from '@/types/icon';
-import { paymentMethodIcons, paymentMethodLabels } from './constants';
 import { ExpenseLoadError } from './ExpenseLoadError';
 import { ExpenseModal } from './ExpenseModal';
 import {
@@ -39,11 +31,10 @@ import {
   useUpdateExpenseMutation,
 } from './expensesApi';
 import { useCloseOverlay } from './overlayNavigation';
+import { PaymentMethodField } from './PaymentMethodField';
 import { expenseFormSchema, type ExpenseFormValues } from './schemas';
 
 const NOTES_MAX = 500;
-
-const paymentMethods = Object.keys(paymentMethodLabels) as PaymentMethod[];
 
 // /expenses/new: a modal over the list.
 export function NewExpensePanel() {
@@ -259,38 +250,10 @@ function ExpenseForm({
           />
         </div>
 
-        <FieldSet className="gap-0" data-invalid={!!errors.paymentMethod}>
-          <FieldLegend variant="label" className="text-secondary">
-            Payment method
-          </FieldLegend>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-            {paymentMethods.map((method) => {
-              const Icon = paymentMethodIcons[method];
-              return (
-                <label
-                  key={method}
-                  className="flex cursor-pointer flex-col items-start gap-3 rounded-xl border border-secondary bg-primary p-3 shadow-xs transition hover:border-primary has-checked:border-brand has-checked:bg-utility-brand-50 has-checked:ring-1 has-checked:ring-(--border-color-brand) has-focus-visible:ring-4 has-focus-visible:ring-brand-500/24"
-                >
-                  <input
-                    type="radio"
-                    value={method}
-                    className="peer sr-only"
-                    {...register('paymentMethod')}
-                  />
-                  <span className="grid size-8 place-items-center rounded-lg border border-secondary bg-primary text-fg-quaternary shadow-xs peer-checked:border-transparent peer-checked:bg-brand-600 peer-checked:text-white">
-                    <Icon className="size-4" />
-                  </span>
-                  <span className="text-sm font-medium text-secondary peer-checked:text-utility-brand-700">
-                    {paymentMethodLabels[method]}
-                  </span>
-                </label>
-              );
-            })}
-          </div>
-          {errors.paymentMethod && (
-            <FieldError className="mt-1.5">{errors.paymentMethod.message}</FieldError>
-          )}
-        </FieldSet>
+        <PaymentMethodField
+          registration={register('paymentMethod')}
+          error={errors.paymentMethod?.message}
+        />
 
         <Field data-invalid={!!errors.notes}>
           <div className="flex items-baseline justify-between">

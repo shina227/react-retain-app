@@ -16,8 +16,12 @@ import { cn } from '@/lib/utils';
 import { useGetBudgetsQuery } from './budgetApi';
 import { BudgetStatusBadge } from './BudgetStatusBadge';
 
-// Budget and spent drop off on narrow screens; remaining and status carry the story.
-const wideOnly = 'hidden sm:table-cell';
+// Budget and spent only show on wide screens, and on phones the status moves under the month,
+// so remaining and status always carry the story without the table scrolling.
+const wideOnly = 'hidden xl:table-cell';
+const statusColumn = 'hidden sm:table-cell';
+// Month, budget, spent, remaining, status.
+const skeletonColumns = [undefined, wideOnly, wideOnly, undefined, statusColumn];
 
 // Every month with a budget, newest first. Clicking a month shows it in the card above.
 export function BudgetHistory({
@@ -63,15 +67,15 @@ export function BudgetHistory({
               <TableHead className={cn(wideOnly, 'text-right')}>Budget</TableHead>
               <TableHead className={cn(wideOnly, 'text-right')}>Spent</TableHead>
               <TableHead className="text-right">Remaining</TableHead>
-              <TableHead>Status</TableHead>
+              <TableHead className={statusColumn}>Status</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {isLoading
               ? Array.from({ length: 3 }, (_, i) => (
                   <TableRow key={i}>
-                    {Array.from({ length: 5 }, (_, j) => (
-                      <TableCell key={j} className={j === 1 || j === 2 ? wideOnly : undefined}>
+                    {skeletonColumns.map((className, j) => (
+                      <TableCell key={j} className={className}>
                         <Skeleton className="h-5 w-24" />
                       </TableCell>
                     ))}
@@ -91,6 +95,9 @@ export function BudgetHistory({
                       >
                         {formatMonth(budget.month)}
                       </button>
+                      <div className="mt-1.5 sm:hidden">
+                        <BudgetStatusBadge status={budget.status} />
+                      </div>
                     </TableCell>
                     <TableCell className={cn(wideOnly, 'text-right tabular-nums')}>
                       {formatMoney(budget.amount)}
@@ -107,7 +114,7 @@ export function BudgetHistory({
                     >
                       {formatMoney(budget.remaining)}
                     </TableCell>
-                    <TableCell>
+                    <TableCell className={statusColumn}>
                       <BudgetStatusBadge status={budget.status} />
                     </TableCell>
                   </TableRow>

@@ -63,7 +63,7 @@ function TableHead({ className, ...props }: React.ComponentProps<'th'>) {
     <th
       data-slot="table-head"
       className={cn(
-        'h-11 px-6 text-left align-middle text-xs font-medium whitespace-nowrap text-tertiary [&:has([role=checkbox])]:pr-0',
+        'h-11 px-4 text-left md:px-6 align-middle text-xs font-medium whitespace-nowrap text-tertiary [&:has([role=checkbox])]:pr-0',
         className,
       )}
       {...props}
@@ -76,7 +76,7 @@ function TableCell({ className, ...props }: React.ComponentProps<'td'>) {
     <td
       data-slot="table-cell"
       className={cn(
-        'px-6 py-4 align-middle whitespace-nowrap text-tertiary [&:has([role=checkbox])]:pr-0',
+        'px-4 py-4 align-middle md:px-6 whitespace-nowrap text-tertiary [&:has([role=checkbox])]:pr-0',
         className,
       )}
       {...props}

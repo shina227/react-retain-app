@@ -38,6 +38,7 @@ export default function LoginPage() {
     <>
       <AuthHeader
         title="Log in to your account"
+        tabTitle="Log in"
         description="Welcome back! Please enter your details."
       />
       <form onSubmit={onSubmit} noValidate className="flex flex-col gap-6">

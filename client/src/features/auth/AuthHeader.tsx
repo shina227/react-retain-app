@@ -8,11 +8,20 @@ const tabs = [
 
 // Title, description and the Sign up | Log in switcher (AuthLayout shows the logo).
 // Links pass the router state on, so "where the user was going" survives switching.
-export function AuthHeader({ title, description }: { title: string; description: string }) {
+export function AuthHeader({
+  title,
+  tabTitle,
+  description,
+}: {
+  title: string;
+  tabTitle: string; // the browser tab title, e.g. "Log in"
+  description: string;
+}) {
   const { state } = useLocation();
 
   return (
     <header className="flex flex-col items-center gap-6 text-center lg:items-start lg:text-left">
+      <title>{`${tabTitle} · Retain`}</title>
       <div className="flex flex-col gap-2 md:gap-3">
         <h1 className="text-xl font-semibold text-primary md:text-display-xs">{title}</h1>
         <p className="text-base text-tertiary">{description}</p>

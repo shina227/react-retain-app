@@ -74,7 +74,7 @@ export function RecentExpenses({ month, summary }: { month: string; summary?: Da
               <Link
                 to={`/expenses/${expense.id}`}
                 state={canGoBack}
-                className="flex items-center gap-3 px-4 py-3 outline-none hover:bg-primary_hover focus-visible:bg-primary_hover md:px-6"
+                className="flex items-center gap-3 px-4 py-3 outline-none hover:bg-primary_hover focus-visible:bg-primary_hover focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-inset md:px-6"
               >
                 <CategoryAvatar category={expense.category} />
                 <div className="min-w-0 flex-1">

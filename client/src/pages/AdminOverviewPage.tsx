@@ -10,10 +10,10 @@ import { EmptyState } from '@/components/feedback/EmptyState';
 import { PageHeader } from '@/components/PageHeader';
 import { StatCard } from '@/components/StatCard';
 import { Button } from '@/components/ui/button';
-import { AdminPanel } from '@/features/admin/AdminPanel';
+import { Panel } from '@/components/Panel';
 import { useGetInsightsQuery } from '@/features/admin/adminApi';
 import { CategoryUsage } from '@/features/admin/CategoryUsage';
-import { RecentExpensesTable, RecentUsersTable } from '@/features/admin/RecentActivity';
+import { ExpensesTable, RecentUsersTable } from '@/features/admin/AdminTables';
 import { Donut, DonutSkeleton } from '@/features/dashboard/CategorySpendChart';
 import { toSlices } from '@/features/dashboard/slices';
 import { formatMoney } from '@/lib/format';
@@ -70,7 +70,7 @@ export default function AdminOverviewPage() {
           </section>
 
           <div className="grid gap-6 @4xl:grid-cols-2">
-            <AdminPanel title="Spend per category" description="Total value, all time">
+            <Panel title="Spend per category" description="Total value, all time">
               {!insights ? (
                 <DonutSkeleton rows={8} />
               ) : insights.totalValue === 0 ? (
@@ -90,16 +90,16 @@ export default function AdminOverviewPage() {
                   total={insights.totalValue}
                 />
               )}
-            </AdminPanel>
+            </Panel>
             <CategoryUsage insights={insights} />
           </div>
 
-          <AdminPanel title="Recent expenses" description="The 10 latest, across all users">
-            <RecentExpensesTable expenses={insights?.recentExpenses} />
-          </AdminPanel>
-          <AdminPanel title="New users" description="The 5 most recent sign-ups">
+          <Panel title="Recent expenses" description="The 10 latest, across all users">
+            <ExpensesTable expenses={insights?.recentExpenses} />
+          </Panel>
+          <Panel title="New users" description="The 5 most recent sign-ups">
             <RecentUsersTable users={insights?.recentUsers} />
-          </AdminPanel>
+          </Panel>
         </div>
       )}
     </>

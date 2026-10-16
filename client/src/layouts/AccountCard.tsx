@@ -1,7 +1,5 @@
 import { ChevronSelectorVertical, LogOut01, Moon01, Sun } from '@untitledui/icons';
 import { useTheme } from 'next-themes';
-import { startTransition } from 'react';
-import { useNavigate } from 'react-router';
 import { Badge } from '@/components/ui/badge';
 import {
   DropdownMenu,
@@ -11,25 +9,18 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useAuth } from '@/features/auth/AuthContext';
+import { useSignOut } from '@/features/auth/useSignOut';
 import { initials } from '@/lib/utils';
 
 // Untitled "nav account card" at the bottom of the sidebar; opens the theme and log out menu.
 export function AccountCard() {
-  const { user, isAdmin, logout } = useAuth();
+  const { user, isAdmin } = useAuth();
   const { resolvedTheme, setTheme } = useTheme();
-  const navigate = useNavigate();
+  const signOut = useSignOut();
   if (!user) return null;
 
   const isDark = resolvedTheme === 'dark';
   const ThemeIcon = isDark ? Sun : Moon01;
-
-  // One transition, so ProtectedRoute never renders signed-out on this page and
-  // remembers it as the next login's destination.
-  const handleLogout = () =>
-    startTransition(() => {
-      logout();
-      navigate('/login', { replace: true });
-    });
 
   return (
     <DropdownMenu>
@@ -56,7 +47,7 @@ export function AccountCard() {
           <ThemeIcon aria-hidden /> {isDark ? 'Light mode' : 'Dark mode'}
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onSelect={handleLogout}>
+        <DropdownMenuItem onSelect={signOut}>
           <LogOut01 aria-hidden /> Log out
         </DropdownMenuItem>
       </DropdownMenuContent>

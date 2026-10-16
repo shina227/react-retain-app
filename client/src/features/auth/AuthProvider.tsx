@@ -1,9 +1,14 @@
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { api, setUnauthorizedHandler, tokenStorage } from '@/lib/api';
 import { useAppDispatch } from '@/store/hooks';
-import type { AuthResponse, LoginInput, RegisterInput, User } from '@/types/api';
+import type { AuthResponse, LoginInput, ProfileInput, RegisterInput, User } from '@/types/api';
 import { AuthContext } from './AuthContext';
-import { useLazyMeQuery, useLoginMutation, useRegisterMutation } from './authApi';
+import {
+  useLazyMeQuery,
+  useLoginMutation,
+  useRegisterMutation,
+  useUpdateMeMutation,
+} from './authApi';
 
 // Owns the signed-in user. The only place that sets or clears the token.
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -12,6 +17,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(() => tokenStorage.get() !== null);
   const [loginRequest] = useLoginMutation();
   const [registerRequest] = useRegisterMutation();
+  const [updateMeRequest] = useUpdateMeMutation();
   const [fetchMe] = useLazyMeQuery();
 
   // Drops the token and every cached response, so the next user starts clean.
@@ -56,9 +62,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     [registerRequest, startSession],
   );
 
+  // The token is unchanged (it holds the id and role, not the name or email).
+  const updateProfile = useCallback(
+    async (input: ProfileInput) => setUser((await updateMeRequest(input).unwrap()).user),
+    [updateMeRequest],
+  );
+
   const value = useMemo(
-    () => ({ user, isAdmin: user?.role === 'ADMIN', isLoading, login, register, logout }),
-    [user, isLoading, login, register, logout],
+    () => ({
+      user,
+      isAdmin: user?.role === 'ADMIN',
+      isLoading,
+      login,
+      register,
+      updateProfile,
+      logout,
+    }),
+    [user, isLoading, login, register, updateProfile, logout],
   );
 
   return <AuthContext value={value}>{children}</AuthContext>;

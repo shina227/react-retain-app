@@ -13,7 +13,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { AdminPanel } from '@/features/admin/AdminPanel';
+import { Panel } from '@/components/Panel';
 import { useGetAdminCategoriesQuery } from '@/features/admin/adminApi';
 import { CategoryDialog } from '@/features/admin/CategoryDialog';
 import { DeleteCategoryDialog } from '@/features/admin/DeleteCategoryDialog';
@@ -57,16 +57,16 @@ export default function AdminCategoriesPage() {
           actions={<Button onClick={refetch}>Try again</Button>}
         />
       ) : (
-        <AdminPanel
+        <Panel
           title="All categories"
           description="Deleting a category moves its expenses to Uncategorized."
         >
-          <Table>
+          <Table aria-busy={!categories}>
             <TableHeader>
               <TableRow>
                 <TableHead>Category</TableHead>
-                <TableHead>Colour</TableHead>
-                <TableHead className="text-right">Expenses</TableHead>
+                <TableHead className="hidden md:table-cell">Colour</TableHead>
+                <TableHead className="hidden text-right sm:table-cell">Expenses</TableHead>
                 <TableHead className="hidden xl:table-cell">Created</TableHead>
                 <TableHead>
                   <span className="sr-only">Actions</span>
@@ -84,14 +84,23 @@ export default function AdminCategoriesPage() {
                   ))
                 : categories.map((category) => (
                     <TableRow key={category.id}>
-                      <TableCell>
+                      <TableCell className="whitespace-normal">
                         <div className="flex items-center gap-3">
                           <CategoryAvatar category={category} />
-                          <span className="font-medium text-primary">{category.name}</span>
-                          {category.isDefault && <Badge>Default</Badge>}
+                          <div>
+                            <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                              <span className="font-medium text-primary">{category.name}</span>
+                              {category.isDefault && <Badge>Default</Badge>}
+                            </div>
+                            {/* On phones the count sits here instead of in its own column. */}
+                            <p className="sm:hidden">
+                              {category.usageCount}{' '}
+                              {category.usageCount === 1 ? 'expense' : 'expenses'}
+                            </p>
+                          </div>
                         </div>
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="hidden md:table-cell">
                         <div className="flex items-center gap-2">
                           <span
                             aria-hidden
@@ -103,7 +112,7 @@ export default function AdminCategoriesPage() {
                           </span>
                         </div>
                       </TableCell>
-                      <TableCell className="text-right text-secondary tabular-nums">
+                      <TableCell className="hidden text-right text-secondary tabular-nums sm:table-cell">
                         {category.usageCount}
                       </TableCell>
                       <TableCell className="hidden xl:table-cell">
@@ -141,7 +150,7 @@ export default function AdminCategoriesPage() {
                   ))}
             </TableBody>
           </Table>
-        </AdminPanel>
+        </Panel>
       )}
 
       <CategoryDialog category={editing} open={formOpen} onOpenChange={setFormOpen} />

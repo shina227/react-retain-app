@@ -190,7 +190,7 @@ function ExpenseMobileList({ groups, grouped }: { groups: Group[]; grouped: bool
                 <Link
                   to={`/expenses/${expense.id}`}
                   state={canGoBack}
-                  className="flex items-center gap-3 px-4 py-3 outline-none hover:bg-primary_hover focus-visible:bg-primary_hover"
+                  className="flex items-center gap-3 px-4 py-3 outline-none hover:bg-primary_hover focus-visible:bg-primary_hover focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-inset"
                 >
                   <CategoryAvatar category={expense.category} />
                   <div className="min-w-0 flex-1">

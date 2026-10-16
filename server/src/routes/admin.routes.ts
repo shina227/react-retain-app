@@ -3,6 +3,7 @@ import * as adminController from '../controllers/adminController.js';
 import * as categoryController from '../controllers/categoryController.js';
 import { requireAdmin, requireAuth } from '../middleware/auth.js';
 import { validate } from '../middleware/validate.js';
+import { adminExpenseListQuerySchema, adminUserListQuerySchema } from '../validators/admin.js';
 import { categoryBodySchema } from '../validators/category.js';
 
 // Everything under /api/admin requires an ADMIN token.
@@ -11,6 +12,12 @@ export const adminRouter = Router();
 adminRouter.use(requireAuth, requireAdmin);
 
 adminRouter.get('/insights', adminController.insights);
+adminRouter.get('/users', validate({ query: adminUserListQuerySchema }), adminController.users);
+adminRouter.get(
+  '/expenses',
+  validate({ query: adminExpenseListQuerySchema }),
+  adminController.expenses,
+);
 
 adminRouter.get('/categories', categoryController.listWithUsage);
 adminRouter.post('/categories', validate({ body: categoryBodySchema }), categoryController.create);

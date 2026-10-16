@@ -54,3 +54,8 @@ export function useMonthParam() {
 
   return [month, setMonth] as const;
 }
+
+const shortLabel = new Intl.DateTimeFormat('en-RW', { month: 'short' });
+
+// "2026-10" → "Oct", for chart axes.
+export const formatMonthShort = (month: string) => shortLabel.format(toDate(month));

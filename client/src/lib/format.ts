@@ -55,3 +55,12 @@ export const formatDayLabel = (value: string) => {
   if (daysAgo === 1) return 'Yesterday';
   return day.getFullYear() === today.getFullYear() ? weekday.format(day) : formatDate(value);
 };
+
+const compactMoney = new Intl.NumberFormat(LOCALE, {
+  style: 'currency',
+  currency: CURRENCY,
+  notation: 'compact',
+});
+
+// 120000 → "RF 120K", for chart axes where space is tight.
+export const formatMoneyCompact = (minor: number) => compactMoney.format(minor / UNITS_PER_MAJOR);
