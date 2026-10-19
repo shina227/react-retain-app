@@ -1,5 +1,5 @@
 // Month helpers. Months are "YYYY-MM" strings and expense dates are stored at UTC midnight,
-// so all maths is done in UTC (which is also Ghana time).
+// so all maths is done in UTC to keep dates from shifting with the server's time zone.
 
 export const currentMonth = () => new Date().toISOString().slice(0, 7);
 

@@ -63,11 +63,11 @@ Shapes are filled in as each endpoint is built. ✅ = implemented.
 
 ```json
 // request: email is trimmed and lowercased; password 8–72 chars; any `role` field is ignored
-{ "name": "Ama Mensah", "email": "ama@example.com", "password": "password123" }
+{ "name": "Aline Uwase", "email": "aline@example.com", "password": "password123" }
 // response
 {
   "token": "<jwt>",
-  "user": { "id": "cm...", "name": "Ama Mensah", "email": "ama@example.com", "role": "USER", "createdAt": "2026-10-09T10:00:00.000Z" }
+  "user": { "id": "cm...", "name": "Aline Uwase", "email": "aline@example.com", "role": "USER", "createdAt": "2026-10-09T10:00:00.000Z" }
 }
 ```
 
@@ -76,7 +76,7 @@ Errors: `400 VALIDATION_ERROR` · `409 EMAIL_TAKEN` · `429 RATE_LIMITED`
 **`POST /auth/login`**: `200`, same response shape as register.
 
 ```json
-{ "email": "ama@example.com", "password": "password123" }
+{ "email": "aline@example.com", "password": "password123" }
 ```
 
 Errors: `400 VALIDATION_ERROR` · `401 INVALID_CREDENTIALS` (same message, "Invalid email or password", for an unknown email and a wrong password) · `429 RATE_LIMITED`
@@ -84,7 +84,7 @@ Errors: `400 VALIDATION_ERROR` · `401 INVALID_CREDENTIALS` (same message, "Inva
 **`GET /auth/me`**: `200`
 
 ```json
-{ "user": { "id": "cm...", "name": "Ama Mensah", "email": "ama@example.com", "role": "USER", "createdAt": "..." } }
+{ "user": { "id": "cm...", "name": "Aline Uwase", "email": "aline@example.com", "role": "USER", "createdAt": "..." } }
 ```
 
 Errors: `401 UNAUTHORIZED` (no `Bearer` header) · `401 INVALID_TOKEN` (bad signature, malformed or expired)
@@ -92,7 +92,7 @@ Errors: `401 UNAUTHORIZED` (no `Bearer` header) · `401 INVALID_TOKEN` (bad sign
 **`PATCH /auth/me`**: `200`, same response shape as `GET /auth/me`. Both fields are required; email is trimmed and lowercased. Any other field (`role`, `password`) is ignored.
 
 ```json
-{ "name": "Ama Mensah", "email": "ama.m@example.com" }
+{ "name": "Aline Uwase", "email": "aline.u@example.com" }
 ```
 
 Errors: `400 VALIDATION_ERROR` · `401` (as above) · `409 EMAIL_TAKEN` (another account uses that email)
@@ -140,7 +140,7 @@ The owner always comes from the token. Any `userId` in the body is ignored.
 
 **`GET /expenses/:id`**: `200` expense object. **`DELETE /expenses/:id`**: `204`, no body. Another user's expense returns `404` on get, update and delete.
 
-**`GET /expenses`**: `200` `Paginated<Expense>` plus a `summary` of **every** expense matching the filters (not just this page): `total` is how many match, `summary.totalAmount` their sum in minor units (`0` when nothing matches). All query params are optional, and empty values are ignored.
+**`GET /expenses`**: `200` `Paginated<Expense>` plus a `summary` of **every** expense matching the filters (not just this page): `total` is how many match, `summary.totalAmount` their sum in francs (`0` when nothing matches). All query params are optional, and empty values are ignored.
 
 ```json
 { "data": [/* expenses */], "page": 1, "limit": 10, "total": 45, "totalPages": 5, "summary": { "totalAmount": 1361290 } }
@@ -282,8 +282,8 @@ Errors: `400 DEFAULT_CATEGORY` (the default can't be deleted) · `404` (unknown 
   "spendPerCategory": [{ "id": "cm...", "name": "Rent", "color": "#6366f1", "count": 15, "total": 1800000 }],
   "top5": [{ "id": "cm...", "name": "Food", "color": "#16a34a", "count": 41, "total": 610000 }],
   "bottom5": [{ "id": "cm...", "name": "Gifts", "color": "#db2777", "count": 0, "total": 0 }],
-  "recentExpenses": [{ "...": "expense object", "user": { "id": "cm...", "name": "Ama Mensah" } }],
-  "recentUsers": [{ "id": "cm...", "name": "Ama Mensah", "email": "demo@example.com", "createdAt": "..." }]
+  "recentExpenses": [{ "...": "expense object", "user": { "id": "cm...", "name": "Aline Uwase" } }],
+  "recentUsers": [{ "id": "cm...", "name": "Aline Uwase", "email": "demo@example.com", "createdAt": "..." }]
 }
 ```
 
@@ -300,7 +300,7 @@ Errors: `400 DEFAULT_CATEGORY` (the default can't be deleted) · `404` (unknown 
 ```json
 {
   "data": [
-    { "id": "cm...", "name": "Ama Mensah", "email": "demo@example.com", "role": "USER", "createdAt": "...", "expenseCount": 45, "totalSpent": 1320000 }
+    { "id": "cm...", "name": "Aline Uwase", "email": "demo@example.com", "role": "USER", "createdAt": "...", "expenseCount": 45, "totalSpent": 1320000 }
   ],
   "page": 1, "limit": 10, "total": 6, "totalPages": 1
 }
@@ -310,7 +310,7 @@ Errors: `400 DEFAULT_CATEGORY` (the default can't be deleted) · `404` (unknown 
 
 ```json
 {
-  "data": [{ "...": "expense object", "user": { "id": "cm...", "name": "Ama Mensah", "email": "demo@example.com" } }],
+  "data": [{ "...": "expense object", "user": { "id": "cm...", "name": "Aline Uwase", "email": "demo@example.com" } }],
   "page": 1, "limit": 10, "total": 150, "totalPages": 15
 }
 ```
