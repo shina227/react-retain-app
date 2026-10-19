@@ -13,7 +13,7 @@ import { FilterSelect } from '@/features/expenses/filters/FilterSelect';
 import { cn } from '@/lib/utils';
 
 export default function AdminExpensesPage() {
-  const list = useAdminList();
+  const list = useAdminList('expenses');
   const { data, error, isFetching, refetch } = useGetAdminExpensesQuery(list.query);
   const { data: categories = [] } = useGetCategoriesQuery();
 

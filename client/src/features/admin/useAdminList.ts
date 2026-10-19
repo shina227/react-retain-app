@@ -1,47 +1,42 @@
-import { useEffect, useState } from 'react';
-import type { AdminListQuery } from '@/types/api';
+import { useEffect, useMemo, useState } from 'react';
+import {
+  selectAdminList,
+  setAdminCategory,
+  setAdminLimit,
+  setAdminPage,
+  setAdminSearch,
+  toAdminListQuery,
+  type AdminList,
+} from '@/store/adminListsSlice';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
 
 const DEBOUNCE_MS = 300;
 
-// Local state for an admin list page. It lives here rather than in Redux because it's scoped
-// to one page and nothing else reads it. Any change other than the page goes back to page 1.
-export function useAdminList() {
-  const [search, setSearch] = useState('');
-  const [debouncedSearch, setDebouncedSearch] = useState('');
-  const [categoryId, setCategoryId] = useState('');
-  const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
+// An admin list page's search, filter and paging, read from and written to Redux.
+// Only the search box's in-progress text is local; it reaches the store once typing pauses.
+export function useAdminList(list: AdminList) {
+  const dispatch = useAppDispatch();
+  const filters = useAppSelector((state) => selectAdminList(state, list));
+  const [search, setSearch] = useState(filters.search);
 
   // Each keystroke restarts the timer, so the request goes out once typing pauses.
   useEffect(() => {
-    const timer = setTimeout(() => setDebouncedSearch(search.trim()), DEBOUNCE_MS);
+    const value = search.trim();
+    if (value === filters.search) return;
+    const timer = setTimeout(() => dispatch(setAdminSearch({ list, value })), DEBOUNCE_MS);
     return () => clearTimeout(timer);
-  }, [search]);
+  }, [search, filters.search, list, dispatch]);
 
-  const query: AdminListQuery = {
-    search: debouncedSearch,
-    categoryId: categoryId || undefined,
-    page,
-    limit,
-  };
+  const query = useMemo(() => toAdminListQuery(filters), [filters]);
 
   return {
     query,
     search,
-    categoryId,
-    isFiltered: !!debouncedSearch || !!categoryId,
-    setPage,
-    setSearch: (value: string) => {
-      setSearch(value);
-      setPage(1);
-    },
-    setCategoryId: (value: string) => {
-      setCategoryId(value);
-      setPage(1);
-    },
-    setLimit: (value: number) => {
-      setLimit(value);
-      setPage(1);
-    },
+    categoryId: filters.categoryId,
+    isFiltered: !!filters.search || !!filters.categoryId,
+    setSearch,
+    setPage: (value: number) => dispatch(setAdminPage({ list, value })),
+    setCategoryId: (value: string) => dispatch(setAdminCategory({ list, value })),
+    setLimit: (value: number) => dispatch(setAdminLimit({ list, value })),
   };
 }

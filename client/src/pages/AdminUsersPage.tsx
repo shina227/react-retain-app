@@ -11,7 +11,7 @@ import { useAdminList } from '@/features/admin/useAdminList';
 import { cn } from '@/lib/utils';
 
 export default function AdminUsersPage() {
-  const list = useAdminList();
+  const list = useAdminList('users');
   const { data, error, isFetching, refetch } = useGetAdminUsersQuery(list.query);
 
   return (
