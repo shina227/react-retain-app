@@ -4,6 +4,8 @@
 @import '@fontsource-variable/inter';
 
 @custom-variant dark (&:is(.dark *));
+/* Short windows, e.g. a laptop at 150% scaling (~620px tall). */
+@custom-variant short (@media (max-height: 50rem));
 
 /*
  * Design tokens from the Untitled UI v8 Figma variables (brand swapped to indigo).

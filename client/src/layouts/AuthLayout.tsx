@@ -9,13 +9,13 @@ export function AuthLayout() {
     <main className="flex min-h-svh">
       <div className="flex flex-1 flex-col items-center gap-8 px-4 py-12 md:px-8 md:pt-24 lg:items-stretch lg:gap-0 lg:pt-8 lg:pb-8">
         <Logo size="md" className="lg:self-start" />
-        <div className="flex w-full flex-1 justify-center lg:items-center lg:py-12">
+        <div className="flex w-full flex-1 justify-center lg:items-center lg:py-12 lg:short:py-0">
           <div className="flex w-full max-w-90 flex-col gap-8">
             <Outlet />
           </div>
         </div>
       </div>
-      <AuthShowcase className="m-4 ml-0 hidden lg:flex lg:w-1/2" />
+      <AuthShowcase className="sticky top-4 m-4 ml-0 hidden h-[calc(100svh-2rem)] lg:flex lg:w-1/2" />
     </main>
   );
 }

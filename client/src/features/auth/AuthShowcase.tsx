@@ -20,13 +20,14 @@ const budgets = [
 ];
 
 // Brand panel beside the auth form on wide screens: tagline plus a mock of the dashboard.
-// Purely decorative, so it's hidden from screen readers.
+// Purely decorative, so it's hidden from screen readers. Pinned to the viewport height so it
+// never makes the page scroll; on short windows it tightens up and drops the budget list.
 export function AuthShowcase({ className }: { className?: string }) {
   return (
     <aside
       aria-hidden
       className={cn(
-        'relative flex-col justify-center gap-12 overflow-hidden rounded-3xl bg-brand-600 p-16',
+        'relative flex-col justify-center gap-12 overflow-hidden rounded-3xl bg-brand-600 p-16 short:gap-8 short:p-12',
         className,
       )}
     >
@@ -79,7 +80,7 @@ export function AuthShowcase({ className }: { className?: string }) {
             </div>
           </div>
 
-          <ul className="flex flex-col gap-4 border-t border-secondary pt-5">
+          <ul className="flex flex-col gap-4 border-t border-secondary pt-5 short:hidden">
             {budgets.map(({ name, spent, limit, width, bar }) => (
               <li key={name} className="flex flex-col gap-2">
                 <div className="flex justify-between gap-4 text-sm">
